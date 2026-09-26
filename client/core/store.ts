@@ -71,8 +71,12 @@ export function createStore(): Store {
         else groups.set(item.folder, [item]);
       }
 
+      // Checked as a number rather than against null, so a response that
+      // predates the field -- an older server still running -- falls back to
+      // newest-first instead of sorting everything by zero and appearing to do
+      // nothing at all.
       for (const group of groups.values()) {
-        if (group.every((item) => item.episode !== null)) {
+        if (group.every((item) => typeof item.episode === 'number')) {
           group.sort((a, b) => (a.episode ?? 0) - (b.episode ?? 0));
         }
       }
