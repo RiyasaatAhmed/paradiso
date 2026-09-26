@@ -1,0 +1,15 @@
+{
+  "//": "Browser code. Unlike the server this must be compiled, since a TV cannot run TypeScript. Emits plain ES modules into public/app.",
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "lib": ["es2022", "dom", "dom.iterable"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "noEmit": false,
+    "outDir": "public/app",
+    "rootDir": ".",
+    "sourceMap": true,
+    "types": []
+  },
+  "include": ["client/**/*.ts", "shared/**/*.ts"]
+}

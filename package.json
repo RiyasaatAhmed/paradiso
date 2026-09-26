@@ -1,0 +1,21 @@
+{
+  "name": "paradiso",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A small private cinema: plays the films on your laptop, on your TV, over your own wifi.",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.client.json",
+    "start": "npm run build && node src/main.ts",
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.client.json --noEmit",
+    "test": "npm run typecheck && node --test",
+    "watch": "tsc -p tsconfig.client.json --watch"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.3",
+    "typescript": "^7.0.2"
+  }
+}

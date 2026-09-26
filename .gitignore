@@ -1,0 +1,7 @@
+# Generated thumbnails, probe results, resume positions -- all rebuildable.
+.cache/
+.DS_Store
+
+# Compiled browser code -- source lives in client/
+public/app/
+node_modules/
