@@ -7,8 +7,6 @@ export interface Config {
   port: number;
   libraries: string[];
   maxDepth: number;
-  minSizeBytes: number;
-  minSizeMB: number;
   isExcludedDir: (name: string) => boolean;
 }
 
@@ -16,7 +14,6 @@ interface RawConfig {
   port?: number;
   libraries?: string[];
   maxDepth?: number;
-  minSizeMB?: number;
   exclude?: string[];
 }
 
@@ -24,7 +21,6 @@ const DEFAULTS = {
   port: 8080,
   libraries: [] as string[],
   maxDepth: 2,
-  minSizeMB: 0,
   exclude: [] as string[],
 };
 
@@ -72,8 +68,6 @@ export function loadConfig(configPath: string): Config {
     port: Number(merged.port),
     libraries,
     maxDepth: Number(merged.maxDepth),
-    minSizeBytes: Number(merged.minSizeMB) * 1024 * 1024,
-    minSizeMB: Number(merged.minSizeMB),
     isExcludedDir: (name) => excludePatterns.some((pattern) => pattern.test(name)),
   };
 }

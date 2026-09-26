@@ -17,8 +17,6 @@ export interface LibraryItem {
   size: number;
   sizeLabel: string;
   mtime: number;
-  /** Below the configured size filter: hidden until "Show everything". */
-  small: boolean;
   /**
    * Position within its series, when the filename carries an episode marker.
    * Null for anything that is not an episode. A folder holding these is ordered
@@ -97,7 +95,6 @@ export interface ResumePosition {
 export interface LibraryResponse {
   items: LibraryItem[];
   progress: Record<string, ResumePosition>;
-  minSizeMB: number;
   libraries: string[];
 }
 

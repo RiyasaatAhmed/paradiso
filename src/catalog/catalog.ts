@@ -58,11 +58,6 @@ export class Catalog {
     return this.#entries.length;
   }
 
-  /** How many survive the size filter -- i.e. what the TV shows by default. */
-  get featuredCount(): number {
-    return this.#entries.filter((entry) => !entry.small).length;
-  }
-
   find(id: string): LibraryEntry | null {
     return this.#byId.get(id) ?? null;
   }
@@ -139,8 +134,6 @@ export class Catalog {
       size: stats.size,
       sizeLabel: formatSize(stats.size),
       mtime: stats.mtimeMs,
-      // Not hidden, just demoted: the UI filters these out until asked otherwise.
-      small: stats.size < this.#config.minSizeBytes,
     };
   }
 }

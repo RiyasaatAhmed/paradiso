@@ -16,7 +16,6 @@ export function registerLibraryRoutes(router: Router, { catalog, progress, confi
     const body: LibraryResponse = {
       items: catalog.toPublicJSON(),
       progress: progress.all,
-      minSizeMB: config.minSizeMB,
       libraries: config.libraries,
     };
     sendJson(res, body);
@@ -24,7 +23,7 @@ export function registerLibraryRoutes(router: Router, { catalog, progress, confi
 
   router.get(/^\/api\/rescan$/, async ({ res }) => {
     await catalog.scan();
-    log.info(`rescanned: ${catalog.size} files (${catalog.featuredCount} above the size filter)`);
+    log.info(`rescanned: ${catalog.size} files`);
     sendJson(res, { ok: true, count: catalog.size });
   });
 

@@ -62,7 +62,7 @@ async function main(): Promise<void> {
   const catalog = new Catalog(config, describe);
   for (const library of config.libraries) log.info(`watching: ${library}`);
   await catalog.scan();
-  log.info(`library: ${catalog.size} files (${catalog.featuredCount} above the size filter)`);
+  log.info(`library: ${catalog.size} files`);
 
   const server = createServer({
     config,
