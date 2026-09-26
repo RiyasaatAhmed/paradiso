@@ -1,0 +1,24 @@
+{
+  "port": 8080,
+
+  "//libraries": "Folders to scan. ~ is expanded. Add more anytime, then hit Rescan in the app.",
+  "libraries": [
+    "~/Desktop/CP",
+    "~/Downloads"
+  ],
+
+  "//maxDepth": "How many subfolder levels deep to look inside each library.",
+  "maxDepth": 2,
+
+  "//minSizeMB": "Hide files smaller than this, so screen recordings and clips don't clutter the TV. The app has a 'Show everything' toggle that ignores this.",
+  "minSizeMB": 200,
+
+  "//exclude": "Folder name patterns to skip entirely. Supports * wildcards.",
+  "exclude": [
+    "ZeroToMastery*",
+    "Zoom",
+    "node_modules",
+    "*.app",
+    "Library"
+  ]
+}
