@@ -1,0 +1,22 @@
+# The build stage compiles the browser code itself, so anything generated or
+# installed locally would only overwrite it with something staler.
+node_modules/
+public/app/
+.cache/
+
+.git/
+.gitignore
+.DS_Store
+
+# Not needed to run the server.
+test/
+*.md
+docker-compose.yml
+Dockerfile
+.dockerignore
+.env
+start.sh
+
+# The real config is mounted at /config/config.json; baking one in would shadow
+# it with paths that only exist on whoever built the image.
+config.json
