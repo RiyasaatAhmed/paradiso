@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import os from 'node:os';
 
 export interface NetworkAddress {
@@ -16,4 +17,13 @@ export function lanAddresses(): NetworkAddress[] {
     }
   }
   return found;
+}
+
+/**
+ * True when running inside a container, where the addresses above belong to the
+ * container's own network and are not routable from a TV. Worth knowing only so
+ * the startup banner can say so instead of printing a URL that cannot work.
+ */
+export function inContainer(): boolean {
+  return fs.existsSync('/.dockerenv');
 }

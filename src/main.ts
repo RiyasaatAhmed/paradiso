@@ -21,14 +21,19 @@ import { createSubtitleService } from './media/subtitles.ts';
 import { MetadataCache } from './storage/metadataCache.ts';
 import { ProgressStore } from './storage/progressStore.ts';
 import { log } from './support/log.ts';
-import { lanAddresses } from './support/network.ts';
+import { inContainer, lanAddresses } from './support/network.ts';
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+
+// The config file and the cache are overridable by environment, so a container
+// can mount its own settings and keep thumbnails on a volume without writing
+// anything back into the image. Everything else lives beside the source.
+const cacheDir = path.resolve(process.env['PARADISO_CACHE'] ?? path.join(projectRoot, '.cache'));
 const paths = {
-  config: path.join(projectRoot, 'config.json'),
+  config: path.resolve(process.env['PARADISO_CONFIG'] ?? path.join(projectRoot, 'config.json')),
   public: path.join(projectRoot, 'public'),
-  cache: path.join(projectRoot, '.cache'),
-  posters: path.join(projectRoot, '.cache', 'posters'),
+  cache: cacheDir,
+  posters: path.join(cacheDir, 'posters'),
 };
 
 async function main(): Promise<void> {
@@ -81,18 +86,46 @@ async function main(): Promise<void> {
   process.on('SIGTERM', () => void shutdown());
 }
 
+/**
+ * Prints the address to type into the TV.
+ *
+ * In a container the interfaces belong to the container, so the discovered
+ * addresses are useless to a TV. PARADISO_ANNOUNCE_HOST lets whoever runs it
+ * supply the address that actually reaches the machine; without it, the banner
+ * says plainly that it does not know rather than printing something wrong.
+ */
 function announce(port: number): void {
-  const addresses = lanAddresses();
+  const announced = process.env['PARADISO_ANNOUNCE_HOST'];
+  const contained = inContainer();
+
   log.blank();
   log.info('Open this on your TV browser:');
-  if (addresses.length === 0) {
-    log.info('    no network interface found — are you connected to wifi?');
+
+  if (announced) {
+    // A port in the value wins: when the container's port is remapped from
+    // outside, the port the server bound to is not the one to type into the TV.
+    log.info(announced.includes(':') ? `    http://${announced}` : `    http://${announced}:${port}`);
+  } else if (contained) {
+    log.info(`    http://<this machine's wifi address>:${port}`);
+  } else {
+    const addresses = lanAddresses();
+    if (addresses.length === 0) {
+      log.info('    no network interface found — are you connected to wifi?');
+    }
+    for (const { address, name } of addresses) {
+      log.info(`    http://${address}:${port}      (${name})`);
+    }
   }
-  for (const { address, name } of addresses) {
-    log.info(`    http://${address}:${port}      (${name})`);
+
+  if (contained && !announced) {
+    log.blank();
+    log.info('Running in a container, so the address above cannot be detected from');
+    log.info('in here. Use the host machine\'s wifi address, or set');
+    log.info('PARADISO_ANNOUNCE_HOST to have it printed for you.');
   }
+
   log.blank();
-  log.info(`On this laptop:  http://localhost:${port}`);
+  if (!contained) log.info(`On this machine:  http://localhost:${port}`);
   log.info('Ctrl-C to stop.');
   log.blank();
 }
