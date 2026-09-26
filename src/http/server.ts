@@ -3,7 +3,7 @@ import http, { type Server } from 'node:http';
 import { log } from '../support/log.ts';
 import { notFound, sendText } from './respond.ts';
 import { Router } from './router.ts';
-import { registerAssetRoutes } from './routes/assetRoutes.ts';
+import { registerAppFallback, registerAssetRoutes } from './routes/assetRoutes.ts';
 import { registerLibraryRoutes } from './routes/libraryRoutes.ts';
 import { registerMediaRoutes } from './routes/mediaRoutes.ts';
 import { registerStreamRoutes } from './routes/streamRoutes.ts';
@@ -25,6 +25,8 @@ export function createServer(services: Services): Server {
   registerLibraryRoutes(router, services);
   registerMediaRoutes(router, services);
   registerStreamRoutes(router, services);
+  // Last: it answers whatever nothing above claimed.
+  registerAppFallback(router, services);
 
   return http.createServer(async (req, res) => {
     const url = new URL(req.url ?? '/', 'http://localhost');
