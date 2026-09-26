@@ -42,23 +42,31 @@ const driftIn = (direction: Direction, dx: number, dy: number): number =>
   direction === 'left' || direction === 'right' ? Math.abs(dy) : Math.abs(dx);
 
 /**
- * @param activeLayer returns the element currently accepting focus -- the player
- *   when it is open, otherwise the detail screen or the home screen. Keeps focus
- *   from escaping into a layer hidden behind the current one.
+ * @param roots returns everything currently accepting focus, nearest first: the
+ *   screen on top, then any chrome that persists across screens. Anything not
+ *   listed is unreachable, which is what stops focus escaping into a layer
+ *   hidden behind the current one.
+ *
+ *   More than one root is needed because the header outlives the screen under
+ *   it. A hidden root costs nothing -- its contents fail the visibility check
+ *   below and drop out on their own.
  */
 export function createFocusManager({
-  activeLayer,
+  roots,
 }: {
-  activeLayer: () => HTMLElement | null;
+  roots: () => readonly (HTMLElement | null)[];
 }): FocusManager {
   let current: HTMLElement | null = null;
 
   function candidates(): HTMLElement[] {
-    const layer = activeLayer();
-    if (!layer) return [];
-    return Array.from(layer.querySelectorAll<HTMLElement>('[data-focus]')).filter(
-      (node) => !node.hidden && node.offsetParent !== null
-    );
+    const found: HTMLElement[] = [];
+    for (const root of roots()) {
+      if (!root) continue;
+      for (const node of root.querySelectorAll<HTMLElement>('[data-focus]')) {
+        if (!node.hidden && node.offsetParent !== null) found.push(node);
+      }
+    }
+    return found;
   }
 
   function removeMarkers(): void {
@@ -100,9 +108,14 @@ export function createFocusManager({
 
     /** Prefer a specific element, falling back to whatever is available. */
     firstMatching(selector) {
-      const preferred = activeLayer()?.querySelector<HTMLElement>(selector);
-      if (preferred) manager.set(preferred);
-      else manager.first();
+      for (const root of roots()) {
+        const preferred = root?.querySelector<HTMLElement>(selector);
+        if (preferred) {
+          manager.set(preferred);
+          return;
+        }
+      }
+      manager.first();
     },
 
     move(direction) {
