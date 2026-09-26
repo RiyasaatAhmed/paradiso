@@ -361,12 +361,20 @@ is coloured at all.
 | **Back** | Hide the controls, then leave the film |
 | **F** *(keyboard only)* | Toggle full screen |
 
-**Big folders.** A row is a good way to glance at twenty things and a bad way to
-reach the three hundredth, so a folder holding more than twenty ends its row
-with a **See all** card. That opens the folder as a grid: it wraps, so you can
-see far more at once, and once there are more than sixty items a row of ranges
-appears at the top — **1–50**, **51–100** and so on — putting any part of the
-collection two presses away. **Back** returns you to the row you came from.
+**Opening a folder.** Every folder name is a button — click it, or press
+**Left** from the first card in its row, and the folder opens as a grid. A
+folder holding more than twenty also ends its row with a **See all** card, since
+that is where you are already heading when you run out of row.
+
+The grid wraps, so you can see far more at once, and once there are more than
+sixty items a row of ranges appears at the top — **1–50**, **51–100** and so on —
+putting any part of the collection two presses away. **Back** returns you to the
+row you came from.
+
+Each thumbnail shows **how long the film runs**, which is what you weigh up
+before starting something. The size is still there, underneath. Running times
+are read once when the library is scanned and then remembered, so the first scan
+of a big folder takes a few seconds and every one after it is instant.
 
 Files named like episodes — `E023`, `S02E05` — are listed in that order rather
 than by when they were downloaded, and keep their episode names, so a card reads
