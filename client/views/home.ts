@@ -4,12 +4,24 @@ import { appendAll, byId, clear, el, focusableButton } from '../core/dom.ts';
 import { formatDuration } from '../core/format.ts';
 import type { FocusManager } from '../navigation/focus.ts';
 import type { Store } from '../core/store.ts';
+import { buildCard, buildSeeAllCard } from './card.ts';
+
+/**
+ * How many cards a row carries before it hands off to the grid.
+ *
+ * A row is for glancing along, and that stops working long before the items run
+ * out -- twenty is already more than fits on screen at once. Everything past it
+ * is reachable in two presses through the See all card, which is better than
+ * being reachable in three hundred.
+ */
+const ROW_LIMIT = 20;
 
 export interface HomeScreen {
   readonly element: HTMLElement;
   render(): void;
   showFailure(message: string): void;
   focusItem(id: string | null): void;
+  focusFolder(folder: string): void;
 }
 
 export interface HomeOptions {
@@ -17,6 +29,7 @@ export interface HomeOptions {
   focus: FocusManager;
   onSelect: (item: LibraryItem) => void;
   onPlay: (item: LibraryItem, seconds: number) => void;
+  onBrowse: (folder: string) => void;
 }
 
 /**
@@ -26,7 +39,13 @@ export interface HomeOptions {
  * continuously previews titles -- the behaviour that makes a Netflix home screen
  * feel alive rather than like a file listing.
  */
-export function createHomeScreen({ store, focus, onSelect, onPlay }: HomeOptions): HomeScreen {
+export function createHomeScreen({
+  store,
+  focus,
+  onSelect,
+  onPlay,
+  onBrowse,
+}: HomeOptions): HomeScreen {
   const root = byId('library');
   const rows = byId('rows');
   const billboard = byId('billboard');
@@ -56,7 +75,9 @@ export function createHomeScreen({ store, focus, onSelect, onPlay }: HomeOptions
     renderBillboard(resuming[0] ?? first);
 
     if (resuming.length > 0) rows.appendChild(buildRow('Continue Watching', resuming));
-    for (const [folder, group] of store.byFolder) rows.appendChild(buildRow(folder, group));
+    for (const [folder, group] of store.byFolder) {
+      rows.appendChild(buildRow(folder, group, () => onBrowse(folder)));
+    }
   }
 
   function showEmpty(): void {
@@ -92,52 +113,38 @@ export function createHomeScreen({ store, focus, onSelect, onPlay }: HomeOptions
     ]);
   }
 
-  function buildRow(title: string, items: readonly LibraryItem[]): HTMLElement {
+  function buildRow(
+    title: string,
+    items: readonly LibraryItem[],
+    onSeeAll?: () => void
+  ): HTMLElement {
     const row = el('div', 'row');
-    row.appendChild(el('h2', 'row-title', title));
+
+    const heading = el('h2', 'row-title', title);
+    if (items.length > ROW_LIMIT) {
+      heading.appendChild(el('span', 'row-count', `${items.length}`));
+    }
+    row.appendChild(heading);
+
     const track = el('div', 'row-track');
-    for (const item of items) track.appendChild(buildCard(item));
+    for (const item of items.slice(0, ROW_LIMIT)) track.appendChild(card(item));
+    if (onSeeAll && items.length > ROW_LIMIT) {
+      track.appendChild(buildSeeAllCard(items.length, onSeeAll));
+    }
+
     row.appendChild(track);
     return row;
   }
 
-  function buildCard(item: LibraryItem): HTMLElement {
-    const card = focusableButton('card', null, () => onSelect(item));
-    card.setAttribute('data-id', item.id);
-    card.appendChild(buildThumb(item));
-    card.appendChild(el('div', 'card-title', item.title));
-    card.appendChild(el('div', 'card-sub', item.folder));
-
-    card.addEventListener('focus', () => {
-      if (featured !== item) renderBillboard(item);
+  function card(item: LibraryItem): HTMLElement {
+    return buildCard({
+      store,
+      item,
+      onSelect,
+      onFocus: (focused) => {
+        if (featured !== focused) renderBillboard(focused);
+      },
     });
-    return card;
-  }
-
-  function buildThumb(item: LibraryItem): HTMLElement {
-    const thumb = el('div', 'thumb');
-
-    const image = el('img');
-    image.alt = '';
-    image.loading = 'lazy';
-    image.src = api.posterUrl(item.id);
-    image.addEventListener('error', () => {
-      image.remove();
-      thumb.appendChild(el('div', 'fallback', '▶'));
-    });
-    thumb.appendChild(image);
-    thumb.appendChild(el('span', 'badge', item.sizeLabel));
-
-    const saved = store.progressFor(item.id);
-    if (saved && saved.duration) {
-      const bar = el('div', 'resume-bar');
-      const fill = el('span');
-      fill.style.width = `${Math.min(100, (saved.seconds / saved.duration) * 100)}%`;
-      bar.appendChild(fill);
-      thumb.appendChild(bar);
-    }
-
-    return thumb;
   }
 
   function showFailure(message: string): void {
@@ -181,8 +188,20 @@ export function createHomeScreen({ store, focus, onSelect, onPlay }: HomeOptions
 
     /** Return focus to a specific title -- used when coming back from playback. */
     focusItem(id) {
-      const card = id ? rows.querySelector<HTMLElement>(`[data-id="${id}"]`) : null;
-      if (card) focus.set(card);
+      const target = id ? rows.querySelector<HTMLElement>(`[data-id="${id}"]`) : null;
+      if (target) focus.set(target);
+      else focus.firstMatching('.card');
+    },
+
+    /**
+     * Coming back from the grid: land on the See all card that opened it, so
+     * Back returns you to where you were rather than to the top of the screen.
+     */
+    focusFolder(folder) {
+      const headings = Array.from(rows.querySelectorAll<HTMLElement>('.row'));
+      const row = headings.find((node) => node.querySelector('.row-title')?.firstChild?.textContent === folder);
+      const target = row?.querySelector<HTMLElement>('.see-all') ?? row?.querySelector<HTMLElement>('.card');
+      if (target) focus.set(target);
       else focus.firstMatching('.card');
     },
   };
