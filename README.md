@@ -503,6 +503,10 @@ compiled, into `public/app/`.
 worth reading before changing anything in `src/media`, which is the part with
 real subtlety.
 
+[`DESIGN.md`](DESIGN.md) records the design system the interface follows and the
+three places it deliberately departs from it — worth reading before changing
+anything in `public/styles/`.
+
 ---
 
 ## A note on security
