@@ -1,0 +1,82 @@
+/* Phone and tablet overrides. The same URL works there,
+   so the layout has to survive a small screen. */
+
+/* ---------------------------------------------------------------- phones */
+
+@media (max-width: 860px) {
+  :root {
+    --safe: 18px;
+  }
+  body {
+    font-size: 17px;
+  }
+  .brand {
+    font-size: 22px;
+  }
+  .chip {
+    font-size: 15px;
+    padding: 9px 13px;
+  }
+  .billboard {
+    height: 52vh;
+    min-height: 320px;
+  }
+  .billboard-body {
+    max-width: 88%;
+    bottom: 34px;
+  }
+  .billboard-title {
+    font-size: 32px;
+  }
+  .billboard-meta {
+    font-size: 16px;
+  }
+  .btn {
+    font-size: 17px;
+    padding: 13px 22px;
+  }
+  .row-title {
+    font-size: 19px;
+  }
+  .card {
+    width: 216px;
+  }
+  .card-title {
+    font-size: 15px;
+  }
+  .card-sub {
+    font-size: 13px;
+  }
+  .detail-title {
+    font-size: 30px;
+  }
+  .detail-meta {
+    font-size: 16px;
+  }
+  .detail-body {
+    margin-top: 30vh;
+  }
+  #subtitles {
+    font-size: 21px;
+  }
+  #controls {
+    padding: 90px 18px 22px;
+  }
+  .now-playing {
+    font-size: 22px;
+  }
+  .player-buttons {
+    flex-wrap: wrap;
+  }
+  .pb-right {
+    margin-left: 0;
+  }
+  .pbtn {
+    font-size: 16px;
+    padding: 10px 12px;
+  }
+  .time-left {
+    font-size: 17px;
+    min-width: 88px;
+  }
+}

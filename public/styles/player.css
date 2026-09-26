@@ -1,0 +1,277 @@
+/* The video player and its control bar. */
+
+/* ---------------------------------------------------------------- player */
+
+#player {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: #000;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#video {
+  width: 100%;
+  height: 100%;
+  background: #000;
+  display: block;
+}
+
+/* Rendered by hand rather than via <track>: native cues are too small for a TV
+   and cannot follow the virtual timeline used when seeking a remuxed stream. */
+#subtitles {
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  bottom: 10%;
+  text-align: center;
+  font-size: 40px;
+  font-weight: 500;
+  line-height: 1.32;
+  color: #fff;
+  text-shadow:
+    0 2px 5px #000,
+    0 0 16px rgba(0, 0, 0, 0.95);
+  pointer-events: none;
+  white-space: pre-wrap;
+  transition: bottom 0.2s;
+}
+
+#player.controls-open #subtitles {
+  bottom: 27%;
+}
+
+.spinner {
+  position: absolute;
+  width: 68px;
+  height: 68px;
+  border: 5px solid rgba(255, 255, 255, 0.22);
+  border-top-color: var(--red);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.player-error {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 38px 42px;
+  max-width: 720px;
+  text-align: center;
+  z-index: 3;
+}
+
+.player-error h3 {
+  margin: 0 0 14px;
+  font-size: 30px;
+}
+
+.player-error p {
+  color: var(--ink-2);
+  margin: 0 0 26px;
+  line-height: 1.5;
+  font-size: 21px;
+}
+
+.player-error .detail-actions {
+  justify-content: center;
+}
+
+#controls {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 150px var(--safe) 46px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.6) 40%, transparent 100%);
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 0.22s,
+    transform 0.22s;
+  pointer-events: none;
+}
+
+#player.controls-open #controls {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.controls-top {
+  margin-bottom: 26px;
+}
+
+.now-playing {
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+}
+
+/* --- scrubber: the one place red belongs */
+
+.scrub {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  margin-bottom: 22px;
+}
+
+.track {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.3);
+  position: relative;
+  cursor: pointer;
+}
+
+.track .played {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 3px;
+  background: var(--red);
+}
+
+.track .knob {
+  position: absolute;
+  top: 50%;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--red);
+  transform: translate(-50%, -50%);
+  transition: transform 0.12s;
+}
+
+/* The bar thickens while the scrubber row holds focus, as Netflix's does. */
+.scrub.active .track {
+  height: 8px;
+}
+
+.scrub.active .knob {
+  transform: translate(-50%, -50%) scale(1.5);
+}
+
+.time-left {
+  font-variant-numeric: tabular-nums;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--ink);
+  min-width: 116px;
+  text-align: right;
+}
+
+.player-buttons {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.pb-left,
+.pb-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* Everything in this group sits at the far right of the bar. */
+.pb-right {
+  margin-left: auto;
+}
+
+.pbtn {
+  appearance: none;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: 500 20px/1 var(--font);
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+  opacity: 0.86;
+  transition:
+    opacity 0.12s,
+    background 0.12s;
+}
+
+.pbtn:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.pbtn.tv-focus,
+.pbtn:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 2px;
+  opacity: 1;
+}
+
+.pbtn .glyph {
+  font-size: 26px;
+  line-height: 1;
+}
+
+/* The universal closed-caption badge, drawn rather than borrowed from emoji. */
+.pbtn .glyph.cc {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  border: 2px solid currentColor;
+  border-radius: 3px;
+  padding: 2px 4px;
+  line-height: 1.05;
+}
+
+/* Active means bright, not red -- red stays on the scrubber so the two
+   never compete for attention. */
+.pbtn.on {
+  color: var(--ink);
+  opacity: 1;
+}
+
+.pbtn:not(.on) {
+  color: #d2d2d2;
+}
+
+.seek-toast {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.78);
+  padding: 20px 34px;
+  border-radius: 6px;
+  font-size: 32px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  opacity: 0;
+  transition: opacity 0.15s;
+  pointer-events: none;
+}
+
+.seek-toast.show {
+  opacity: 1;
+}
