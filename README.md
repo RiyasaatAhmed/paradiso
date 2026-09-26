@@ -361,6 +361,17 @@ is coloured at all.
 | **Back** | Hide the controls, then leave the film |
 | **F** *(keyboard only)* | Toggle full screen |
 
+**Big folders.** A row is a good way to glance at twenty things and a bad way to
+reach the three hundredth, so a folder holding more than twenty ends its row
+with a **See all** card. That opens the folder as a grid: it wraps, so you can
+see far more at once, and once there are more than sixty items a row of ranges
+appears at the top — **1–50**, **51–100** and so on — putting any part of the
+collection two presses away. **Back** returns you to the row you came from.
+
+Files named like episodes — `E023`, `S02E05` — are listed in that order rather
+than by when they were downloaded, and keep their episode names, so a card reads
+**E023 · For the Love of Ruggles**.
+
 Where you stopped is remembered, so a half-watched film shows a **Resume**
 button, a progress line on its thumbnail, and a place in Continue Watching.
 

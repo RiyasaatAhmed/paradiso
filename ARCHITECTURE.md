@@ -118,7 +118,9 @@ navigation/
   remote.ts             Key codes -> semantic actions
 
 views/
+  card.ts               One title, shared by the rows and the grid
   home.ts               Billboard and rows
+  browse.ts             One folder as a grid, for large collections
   detail.ts             Title page and playback options
   player.ts             Playback orchestration
 
@@ -149,8 +151,18 @@ pending: shown immediately, committed only once the viewer stops pressing.
 than through a `<track>` element — native cues follow the element's clock, which
 is the wrong clock.
 
+**Rows hand off to a grid.** A horizontal row is a browsing device for roughly
+twenty items; past that it is a corridor, and reaching the three hundredth item
+means three hundred presses with no sense of position. So a row caps itself and
+ends with a card that opens `browse.ts`, which lays the same folder out as a
+wrapping grid with a range rail for crossing it in two presses. The focus engine
+needed no changes for this — resolving moves geometrically means a grid already
+behaved like a grid.
+
 **Screens never import each other.** Navigation flows through callbacks wired in
 `client/main.ts`, so there is one place describing how the app moves and no cycles.
+Back unwinds one layer at a time — detail, then grid, then home — and each layer
+hands focus back to the element that opened it.
 
 ## Testing
 
