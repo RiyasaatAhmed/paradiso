@@ -1,0 +1,23 @@
+{
+  "//port": "Leave this at 8080. To serve on another port, change the left-hand side of the ports mapping in docker-compose.yml instead.",
+  "port": 8080,
+
+  "//libraries": "Paths *inside the container*. Whatever you mount at /media is scanned; there is no need to change this unless you mount somewhere else.",
+  "libraries": [
+    "/media"
+  ],
+
+  "//maxDepth": "How many subfolder levels deep to look inside each library.",
+  "maxDepth": 3,
+
+  "//minSizeMB": "Hide files smaller than this, so clips and samples don't clutter the TV. The app has a 'Show everything' toggle that ignores this.",
+  "minSizeMB": 200,
+
+  "//exclude": "Folder name patterns to skip entirely. Supports * wildcards.",
+  "exclude": [
+    "node_modules",
+    "@eaDir",
+    ".*",
+    "*.app"
+  ]
+}
