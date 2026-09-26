@@ -9,7 +9,7 @@
 import type { LibraryItem } from '../../shared/contracts.ts';
 import { api } from '../core/api.ts';
 import { el, focusableButton } from '../core/dom.ts';
-import { folderName } from '../core/format.ts';
+import { folderName, formatDuration } from '../core/format.ts';
 import type { Store } from '../core/store.ts';
 
 export interface CardOptions {
@@ -47,7 +47,11 @@ function buildThumb(store: Store, item: LibraryItem): HTMLElement {
     thumb.appendChild(el('div', 'fallback', '▶'));
   });
   thumb.appendChild(image);
-  thumb.appendChild(el('span', 'badge', item.sizeLabel));
+  // How long it runs, which is what you weigh before starting something. Size
+  // only stands in when the file could not be read at all.
+  thumb.appendChild(
+    el('span', 'badge', item.duration ? formatDuration(item.duration) : item.sizeLabel)
+  );
 
   const saved = store.progressFor(item.id);
   if (saved && saved.duration) {

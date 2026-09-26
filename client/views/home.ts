@@ -100,7 +100,7 @@ export function createHomeScreen({
     byId('billboardTitle').textContent = item.title;
 
     const saved = store.progressFor(item.id);
-    const facts = [item.folder, item.sizeLabel];
+    const facts = [folderName(item.folder), item.duration ? formatDuration(item.duration) : item.sizeLabel];
     if (saved && saved.duration) facts.push(`${formatDuration(saved.duration - saved.seconds)} left`);
 
     const meta = clear(byId('billboardMeta'));
@@ -118,26 +118,48 @@ export function createHomeScreen({
   }
 
   function buildRow(
-    title: string,
+    label: string,
     items: readonly LibraryItem[],
-    onSeeAll?: () => void
+    onOpen?: () => void
   ): HTMLElement {
     const row = el('div', 'row');
-
-    const heading = el('h2', 'row-title', title);
-    if (items.length > ROW_LIMIT) {
-      heading.appendChild(el('span', 'row-count', `${items.length}`));
-    }
-    row.appendChild(heading);
+    row.appendChild(buildHeading(label, items.length, onOpen));
 
     const track = el('div', 'row-track');
     for (const item of items.slice(0, ROW_LIMIT)) track.appendChild(card(item));
-    if (onSeeAll && items.length > ROW_LIMIT) {
-      track.appendChild(buildSeeAllCard(items.length, onSeeAll));
+    if (onOpen && items.length > ROW_LIMIT) {
+      track.appendChild(buildSeeAllCard(items.length, onOpen));
     }
 
     row.appendChild(track);
     return row;
+  }
+
+  /**
+   * The folder name opens the folder.
+   *
+   * Every row gets this, not only the long ones -- a name that is sometimes a
+   * control and sometimes inert is worse than either. Continue Watching is the
+   * exception, because it is a view rather than a folder and there is nothing
+   * to open.
+   */
+  function buildHeading(label: string, total: number, onOpen?: () => void): HTMLElement {
+    const heading = el('h2', 'row-title');
+
+    const count = total > ROW_LIMIT ? el('span', 'row-count', String(total)) : null;
+
+    if (!onOpen) {
+      heading.append(label);
+      if (count) heading.appendChild(count);
+      return heading;
+    }
+
+    const button = focusableButton('row-open', null, onOpen);
+    button.append(label);
+    if (count) button.appendChild(count);
+    button.appendChild(el('span', 'row-chevron', '›'));
+    heading.appendChild(button);
+    return heading;
   }
 
   function card(item: LibraryItem): HTMLElement {
