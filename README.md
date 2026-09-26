@@ -391,9 +391,6 @@ be sent to another device on the wifi:
 | `/title/<id>` | a title, ready to play |
 | `/watch/<id>` | the same title — browsers will not start a film nobody has touched yet, so opening this cold leaves you one press away |
 
-A link to a folder works even when the size filter would normally hide it; the
-filter lifts rather than pretending the folder is not there.
-
 Files named like episodes — `E023`, `S02E05` — are listed in that order rather
 than by when they were downloaded, and keep their episode names, so a card reads
 **E023 · For the Love of Ruggles**.
@@ -414,7 +411,6 @@ Edit `config.json` (or `config.docker.json` when using Docker):
   "port": 8080,
   "libraries": ["~/Movies", "~/Downloads", "/Volumes/External/Films"],
   "maxDepth": 2,
-  "minSizeMB": 200,
   "exclude": ["node_modules", ".*", "*.app"]
 }
 ```
@@ -424,7 +420,6 @@ Edit `config.json` (or `config.docker.json` when using Docker):
 | `port` | The port to serve on. Change it if 8080 is taken. |
 | `libraries` | Folders to look in. `~` means your home folder. External drives and network shares work, as long as they are mounted. |
 | `maxDepth` | How many subfolder levels to search. `2` finds `Films/Heat/heat.mkv`. |
-| `minSizeMB` | Hides anything smaller, keeping screen recordings and clips out of the way. The **Show everything** button in the app ignores it whenever you want. |
 | `exclude` | Folder names to skip entirely. `*` works as a wildcard. |
 
 Restart the server after editing this file. Adding *files* only needs **Rescan**;
@@ -501,8 +496,7 @@ control bar. If Convert works and the others do not, the TV is refusing the
 codec. If nothing works, the file may be corrupt — try playing it on the computer.
 
 **No films are listed.** Check `libraries` in your config points at the right
-folders, and that `minSizeMB` is not hiding them — press **Show everything** to
-find out. Then press **Rescan**.
+folders, and that nothing in `exclude` is skipping them. Then press **Rescan**.
 
 **Playback stops after a while.** The computer went to sleep. Use `./start.sh`
 rather than `npm start`, or disable sleep in your system settings.
