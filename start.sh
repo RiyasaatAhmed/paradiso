@@ -44,9 +44,13 @@ fi
 echo "  Building the web app…"
 npm run build --silent
 
-# Keep the laptop awake while streaming -- a sleeping laptop stops the film.
+# Keep the machine awake while streaming -- if it sleeps, the film stops. Each
+# platform has its own way of asking; fall through to plain node if neither is
+# there, since sleeping is a nuisance rather than a reason not to start.
 if command -v caffeinate >/dev/null 2>&1; then
   exec caffeinate -i node src/main.ts
+elif command -v systemd-inhibit >/dev/null 2>&1; then
+  exec systemd-inhibit --what=idle:sleep --why="Streaming to the TV" node src/main.ts
 else
   exec node src/main.ts
 fi
