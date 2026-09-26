@@ -44,6 +44,14 @@ function globToRegExp(pattern: string): RegExp {
  * Everything downstream can then assume absolute paths and correct types.
  */
 export function loadConfig(configPath: string): Config {
+  if (!fs.existsSync(configPath)) {
+    throw new Error(
+      `No config file at ${configPath}.\n` +
+        '       Copy config.example.json to config.json and set "libraries" to the\n' +
+        '       folders holding your films. Or just run ./start.sh, which does it.'
+    );
+  }
+
   const raw = JSON.parse(fs.readFileSync(configPath, 'utf8')) as RawConfig & Record<string, unknown>;
 
   // Keys beginning with "//" are documentation inside config.json; ignore them.

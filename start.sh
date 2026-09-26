@@ -22,6 +22,16 @@ if [ ! -d node_modules ]; then
   npm install --silent
 fi
 
+# First run on a new machine: give it a config to edit rather than an error.
+if [ ! -f config.json ]; then
+  cp config.example.json config.json
+  echo ""
+  echo "  Created config.json for you."
+  echo "  It scans ~/Movies and ~/Downloads — edit 'libraries' if your films"
+  echo "  live somewhere else, then run this again."
+  echo ""
+fi
+
 # The browser half has to be compiled -- a TV cannot run TypeScript. Cheap
 # enough to redo every launch, which keeps public/app from ever going stale.
 echo "  Building the web app…"
