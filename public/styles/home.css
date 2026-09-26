@@ -184,10 +184,47 @@
   color: var(--on-dark);
 }
 
+/* The name is the control that opens the folder, so it is a real button --
+   but it has to keep reading as a heading, not grow a pill around itself.
+   The chevron is what says it does something. */
+.row-open {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-xs);
+  text-align: left;
+  transition: transform 0.12s ease;
+}
+
+.row-open:active {
+  transform: var(--press);
+}
+
+/* Sitting slightly clear of the text, since the ring wraps the name itself
+   rather than a box drawn around it. */
+.row-open.tv-focus,
+.row-open:focus-visible {
+  outline: var(--focus-ring) solid var(--focus-ring-color);
+  outline-offset: 6px;
+  border-radius: 2px;
+}
+
+.row-chevron {
+  color: var(--primary-on-dark);
+  font-weight: var(--weight-body);
+}
+
 /* How many the folder holds, when the row is showing only the first of them.
    Quiet, because it is a fact about the row rather than part of its name. */
 .row-count {
-  margin-left: var(--space-sm);
   color: var(--body-muted);
   font-size: var(--text-caption);
   font-weight: var(--weight-body);
