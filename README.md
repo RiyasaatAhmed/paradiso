@@ -376,6 +376,24 @@ before starting something. The size is still there, underneath. Running times
 are read once when the library is scanned and then remembered, so the first scan
 of a big folder takes a few seconds and every one after it is instant.
 
+**Getting back.** The bar across the top stays put wherever you are, and its
+name is a button: press it from any screen to return to the library. **Back**
+steps out one screen at a time — out of the film, out of the title, out of the
+folder — and the browser's own Back button does exactly the same thing.
+
+**Addresses.** Every screen has one, so a page survives a refresh and a link can
+be sent to another device on the wifi:
+
+| | |
+| --- | --- |
+| `/` | the library |
+| `/folder/<name>` | one folder as a grid |
+| `/title/<id>` | a title, ready to play |
+| `/watch/<id>` | the same title — browsers will not start a film nobody has touched yet, so opening this cold leaves you one press away |
+
+A link to a folder works even when the size filter would normally hide it; the
+filter lifts rather than pretending the folder is not there.
+
 Files named like episodes — `E023`, `S02E05` — are listed in that order rather
 than by when they were downloaded, and keep their episode names, so a card reads
 **E023 · For the Love of Ruggles**.

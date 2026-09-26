@@ -116,9 +116,12 @@ core/
 navigation/
   focus.ts              Spatial focus engine
   remote.ts             Key codes -> semantic actions
+  routes.ts             Route <-> URL, pure                        [tested]
+  history.ts            Drives the History API
 
 views/
   card.ts               One title, shared by the rows and the grid
+  header.ts             The bar across the top, outliving every screen
   home.ts               Billboard and rows
   browse.ts             One folder as a grid, for large collections
   detail.ts             Title page and playback options
@@ -161,8 +164,28 @@ behaved like a grid.
 
 **Screens never import each other.** Navigation flows through callbacks wired in
 `client/main.ts`, so there is one place describing how the app moves and no cycles.
-Back unwinds one layer at a time — detail, then grid, then home — and each layer
-hands focus back to the element that opened it.
+
+**Routing did not add a stack; it named the one already there.** The screens
+were always layered — player over detail over grid over home — so each layer
+became a URL. Two rules keep it from tangling:
+
+- Screens report what the viewer did. They never open each other and never
+  decide what Back means.
+- `applyRoute()` is the only function that opens or closes anything, and it
+  never navigates. Everything else — a click, the remote's Back key, the
+  browser's Back button, a pasted link — arrives there by the same path, which
+  is why they cannot disagree.
+
+Going back is real `history.back()` rather than a bespoke unwind, so the browser
+button and the remote key are the same code. `routes.ts` is pure and tested;
+`history.ts` is the only part that touches `window`. That split is not tidiness:
+the test project has no DOM lib, so a URL parser that reached for `window` could
+not be tested at all.
+
+A server-side fallback serves `index.html` for anything that is not an asset or
+an API path, so those URLs survive a reload. It refuses to shadow `/api`,
+`/stream`, `/poster` and `/subs`, since a missing stream should stay a 404 and
+not become a page that loads and then cannot explain itself.
 
 ## Testing
 
