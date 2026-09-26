@@ -1,82 +1,114 @@
-/* Phone and tablet overrides. The same URL works there,
-   so the layout has to survive a small screen. */
+/* Screens closer than a television.
 
-/* ---------------------------------------------------------------- phones */
+   Almost nothing here touches a font size directly. The type ramp is Apple's
+   sizes multiplied by --scale, so stepping --scale down moves the whole ramp at
+   once and keeps every proportion and tracking value intact. At the phone tier
+   --scale reaches 1 and the sizes become literally Apple's -- 17px body, 40px
+   display -- which is the distance they were drawn for. What is left below is
+   layout: margins, column widths, and the few places a viewport that narrow
+   needs a different arrangement rather than a smaller one. */
+
+/* ------------------------------------------------------- laptops and monitors */
+
+@media (max-width: 1366px) {
+  :root {
+    --scale: 1.15;
+    --safe: var(--space-xxl);
+  }
+}
+
+/* The document steps the hero headline down to display size here. */
+@media (max-width: 1068px) {
+  .billboard-title {
+    font-size: var(--text-display-lg);
+    letter-spacing: 0;
+  }
+}
+
+/* ------------------------------------------------------- phones and tablets */
 
 @media (max-width: 860px) {
   :root {
+    --scale: 1;
     --safe: 18px;
+    /* Apple's own ring width, now that the screen is at arm's length. */
+    --focus-ring: 2px;
   }
-  body {
-    font-size: 17px;
+
+  .topbar {
+    padding: var(--space-sm) var(--safe);
   }
-  .brand {
-    font-size: 22px;
-  }
-  .chip {
-    font-size: 15px;
-    padding: 9px 13px;
-  }
+
   .billboard {
     height: 52vh;
     min-height: 320px;
   }
+
   .billboard-body {
     max-width: 88%;
-    bottom: 34px;
+    bottom: var(--space-xl);
   }
+
   .billboard-title {
-    font-size: 32px;
+    font-size: var(--text-display-md);
+    letter-spacing: var(--track-display-md);
   }
-  .billboard-meta {
-    font-size: 16px;
-  }
-  .btn {
-    font-size: 17px;
-    padding: 13px 22px;
-  }
-  .row-title {
-    font-size: 19px;
-  }
+
   .card {
     width: 216px;
   }
-  .card-title {
-    font-size: 15px;
-  }
-  .card-sub {
-    font-size: 13px;
-  }
-  .detail-title {
-    font-size: 30px;
-  }
-  .detail-meta {
-    font-size: 16px;
-  }
+
   .detail-body {
     margin-top: 30vh;
   }
+
+  #rows.no-billboard {
+    padding-top: calc(var(--space-xxl) + var(--space-xl));
+  }
+
+  /* Big enough to read across a room is far too big held in one hand. */
   #subtitles {
-    font-size: 21px;
+    font-size: var(--text-tagline);
+    bottom: 12%;
   }
+
   #controls {
-    padding: 90px 18px 22px;
+    padding: var(--space-section) var(--safe) var(--space-lg);
   }
+
   .now-playing {
-    font-size: 22px;
+    font-size: var(--text-tagline);
+    letter-spacing: var(--track-tagline);
   }
+
+  /* Two rows of controls rather than one cramped line. */
   .player-buttons {
     flex-wrap: wrap;
   }
+
   .pb-right {
     margin-left: 0;
   }
-  .pbtn {
-    font-size: 16px;
-    padding: 10px 12px;
+
+  .seek-toast {
+    font-size: var(--text-lead);
   }
-  .time-left {
-    font-size: 17px;
-    min-width: 88px;
+
+  .empty {
+    padding: calc(var(--space-section) + var(--space-xl)) var(--safe) var(--space-xxl);
+    font-size: var(--text-body);
+  }
+}
+
+/* ------------------------------------------------------- small phones */
+
+@media (max-width: 480px) {
+  .billboard-title {
+    font-size: var(--text-lead);
+    letter-spacing: var(--track-lead);
+  }
+
+  .card {
+    width: 168px;
   }
 }
