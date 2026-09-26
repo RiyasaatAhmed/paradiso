@@ -14,8 +14,6 @@ import type { Store } from '../core/store.ts';
 
 export interface Header {
   readonly element: HTMLElement;
-  /** Redraw the toggle's label after the store changes underneath it. */
-  sync(): void;
   setHidden(hidden: boolean): void;
   /**
    * On the home screen the bar is transparent until the billboard scrolls away.
@@ -42,7 +40,6 @@ export function createHeader({
 }: HeaderOptions): Header {
   const root = byId('topbar');
   const brand = byId<HTMLButtonElement>('brandHome');
-  const toggleButton = byId<HTMLButtonElement>('toggleAll');
   const rescanButton = byId<HTMLButtonElement>('rescan');
 
   let alwaysFilled = false;
@@ -52,18 +49,7 @@ export function createHeader({
     root.className = filled ? 'topbar solid' : 'topbar';
   }
 
-  function sync(): void {
-    toggleButton.textContent = store.showAll ? 'Hide small files' : 'Show everything';
-    toggleButton.className = store.showAll ? 'chip on' : 'chip';
-  }
-
   brand.addEventListener('click', onHome);
-
-  toggleButton.addEventListener('click', () => {
-    store.toggleShowAll();
-    sync();
-    onLibraryChanged();
-  });
 
   rescanButton.addEventListener('click', () => {
     rescanButton.textContent = 'Scanning…';
@@ -81,7 +67,6 @@ export function createHeader({
 
   return {
     element: root,
-    sync,
 
     setHidden(hidden) {
       root.hidden = hidden;

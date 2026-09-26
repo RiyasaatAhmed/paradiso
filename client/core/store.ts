@@ -5,19 +5,10 @@ import { api } from './api.ts';
 const MIN_RESUME_SECONDS = 30;
 
 export interface Store {
-  readonly minSizeMB: number;
-  readonly showAll: boolean;
-  readonly totalCount: number;
-  readonly visibleItems: LibraryItem[];
+  readonly items: LibraryItem[];
   readonly continueWatching: LibraryItem[];
   readonly byFolder: Map<string, LibraryItem[]>;
-  toggleShowAll(): void;
-  setShowAll(value: boolean): void;
-  /** Whether a folder exists at all, filter or no filter. */
-  hasFolder(folder: string): boolean;
   refresh(): Promise<void>;
-  /** Across everything, not only what is currently visible: a link may name a
-   *  file the size filter is hiding. */
   find(id: string): LibraryItem | null;
   progressFor(id: string): ResumePosition | null;
   describe(id: string): Promise<MediaResponse>;
@@ -32,31 +23,26 @@ export interface Store {
 export function createStore(): Store {
   let items: LibraryItem[] = [];
   let progress: Record<string, ResumePosition> = {};
-  let minSizeMB = 0;
-  let showAll = false;
   const metaCache = new Map<string, MediaResponse>();
 
   const store: Store = {
-    get minSizeMB() {
-      return minSizeMB;
-    },
-
-    get showAll() {
-      return showAll;
-    },
-
-    get totalCount() {
-      return items.length;
-    },
-
-    /** What the home screen shows: everything, or only the sizeable files. */
-    get visibleItems() {
-      return showAll ? items : items.filter((item) => !item.small);
+    /**
+     * Everything the scan found.
+     *
+     * There was once a size filter here, hiding anything below a configured
+     * number of megabytes so that screen recordings stayed out of the way. It
+     * cost more than it saved: a folder of short episodes is indistinguishable
+     * from clutter by size alone, so the filter hid whole collections and the
+     * button that undid it had to be found first. Folders you genuinely never
+     * want are better named in `exclude`, which says what it means.
+     */
+    get items() {
+      return items;
     },
 
     /** Titles worth returning to, most recently watched first. */
     get continueWatching() {
-      return store.visibleItems
+      return store.items
         .filter((item) => store.progressFor(item.id))
         .sort((a, b) => (progress[b.id]?.at ?? 0) - (progress[a.id]?.at ?? 0));
     },
@@ -71,7 +57,7 @@ export function createStore(): Store {
      */
     get byFolder() {
       const groups = new Map<string, LibraryItem[]>();
-      for (const item of store.visibleItems) {
+      for (const item of store.items) {
         const group = groups.get(item.folder);
         if (group) group.push(item);
         else groups.set(item.folder, [item]);
@@ -89,23 +75,10 @@ export function createStore(): Store {
       return groups;
     },
 
-    toggleShowAll() {
-      showAll = !showAll;
-    },
-
-    setShowAll(value) {
-      showAll = value;
-    },
-
-    hasFolder(folder) {
-      return items.some((item) => item.folder === folder);
-    },
-
     async refresh() {
       const data = await api.fetchLibrary();
       items = data.items;
       progress = data.progress ?? {};
-      minSizeMB = data.minSizeMB;
     },
 
     find(id) {

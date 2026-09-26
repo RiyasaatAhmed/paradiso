@@ -50,7 +50,7 @@ const header = createHeader({
   onLibraryChanged: () => {
     home.render();
     browse.refresh();
-    // The filter may have emptied the folder we were looking at.
+    // A rescan can take the folder we were looking at with it.
     const route = router.current;
     if (route.name === 'folder' && !store.byFolder.has(route.folder)) navigate(HOME);
     else focus.firstMatching('.card');
@@ -145,15 +145,6 @@ function applyRoute(route: Route): void {
   if (!wantsTitle && detail.isOpen) detail.close();
 
   if (route.name === 'folder') {
-    // A folder can exist and still be invisible, because every file in it is
-    // under the size filter -- which is true of any folder of short episodes.
-    // Someone who followed a link to it has asked for it plainly enough, so
-    // lift the filter rather than pretending the folder is not there.
-    if (!store.byFolder.has(route.folder) && store.hasFolder(route.folder)) {
-      store.setShowAll(true);
-      header.sync();
-      home.render();
-    }
     if (!store.byFolder.has(route.folder)) {
       router.replace(HOME);
       applyRoute(HOME);
@@ -279,7 +270,6 @@ function handleDirectionInPlayer(action: Action): boolean {
 void store
   .refresh()
   .then(() => {
-    header.sync();
     home.render();
 
     // Whatever the address bar says, including a link someone was sent.

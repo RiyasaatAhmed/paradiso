@@ -53,7 +53,7 @@ export function createHomeScreen({
   let featured: LibraryItem | null = null;
 
   function render(): void {
-    const items = store.visibleItems;
+    const items = store.items;
 
     clear(rows);
 
@@ -83,9 +83,7 @@ export function createHomeScreen({
     billboard.hidden = true;
     emptyMessage.hidden = false;
     emptyMessage.innerHTML =
-      store.totalCount > 0 && !store.showAll
-        ? `Nothing over ${store.minSizeMB} MB in your folders. Press <b>Show everything</b> to see the smaller files too.`
-        : 'No videos found. Add folders to <code>config.json</code> and press <b>Rescan</b>.';
+      'No videos found. Add folders to <code>config.json</code> and press <b>Rescan</b>.';
   }
 
   function renderBillboard(item: LibraryItem): void {
