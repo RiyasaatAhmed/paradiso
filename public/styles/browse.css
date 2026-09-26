@@ -15,11 +15,17 @@
 /* ---------------------------------------------------------------- header */
 
 /* Sticky and frosted, so the folder name and the jump rail stay reachable
-   however far down the grid you are. */
+   however far down the grid you are.
+
+   This has to outrank a focused card. A focused card is lifted above its
+   neighbours so its ring stays unbroken, and without a higher number here that
+   lift carries it over the header too -- covering the folder name and the last
+   of the range chips, which are the two things the header exists to keep
+   reachable. Cards pass behind it instead, blurred by the frosting. */
 .browse-head {
   position: sticky;
   top: 0;
-  z-index: 2;
+  z-index: 20;
   padding: var(--space-xl) var(--safe) var(--space-lg);
   background: rgba(37, 37, 39, 0.8);
   -webkit-backdrop-filter: var(--blur);
@@ -82,7 +88,8 @@
 }
 
 /* A focused card grows, and in a grid it has neighbours on four sides rather
-   than two. Lifting it above them keeps the ring unbroken. */
+   than two. Lifting it above them keeps the ring unbroken -- but only above
+   them, and never above the header. */
 .browse-grid .card.tv-focus {
   z-index: 3;
 }
