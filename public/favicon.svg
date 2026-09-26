@@ -1,15 +1,21 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Paradiso">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64"
+     role="img" aria-label="Paradiso">
+  <title>Paradiso</title>
   <!--
     The favicon is the Play button.
 
     The design system allows one interactive colour and one loud control, and on
     every screen of this app that control is an Action Blue pill with a white
     glyph in it. Making the tab icon the same thing means the mark needs no
-    separate explanation -- and a solid blue tile stays visible against both a
+    separate explanation, and a solid blue tile stays visible against both a
     light and a dark browser chrome, which a dark tile would not.
 
     A projector beam was the obvious alternative and it dissolves at 16px. This
-    survives, because it is two shapes.
+    survives, because it is only two shapes.
+
+    Note for editors: XML forbids a double hyphen inside a comment, so the
+    em dash convention used everywhere else in this codebase would make the
+    whole file fail to parse, and a malformed favicon fails silently.
   -->
   <rect width="64" height="64" rx="14" fill="#0066cc"/>
   <path d="M25 19.5 46 32 25 44.5Z" fill="#ffffff" stroke="#ffffff" stroke-width="5"
