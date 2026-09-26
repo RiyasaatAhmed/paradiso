@@ -56,7 +56,10 @@ async function main(): Promise<void> {
   const posterFor = createPosterService({ posterDir: paths.posters, describe });
   const subtitlesFor = createSubtitleService({ cacheDir: paths.cache, describe });
 
-  const catalog = new Catalog(config);
+  // The catalog is given `describe` so a scan can read running times as it
+  // goes. Results are cached by size and mtime, so only the first scan of a
+  // given file pays for it.
+  const catalog = new Catalog(config, describe);
   for (const library of config.libraries) log.info(`watching: ${library}`);
   await catalog.scan();
   log.info(`library: ${catalog.size} files (${catalog.featuredCount} above the size filter)`);

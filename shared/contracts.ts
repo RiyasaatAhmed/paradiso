@@ -26,6 +26,14 @@ export interface LibraryItem {
    * order it was made, not the order it happened to be downloaded.
    */
   episode: number | null;
+  /**
+   * Running time in seconds, or null when the file could not be read.
+   *
+   * Filled in at scan time from the probe cache, because how long something
+   * runs is what you actually weigh up before starting it -- how many megabytes
+   * it occupies is a fact about your disk, not about the evening.
+   */
+  duration: number | null;
 }
 
 export interface VideoStream {
