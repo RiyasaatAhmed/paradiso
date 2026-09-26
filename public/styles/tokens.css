@@ -1,0 +1,52 @@
+/* Design tokens. Netflix's own palette and scale, in one place
+   so a colour is never invented halfway down a file. */
+
+/* Netflix-style 10-foot UI.
+ *
+ * Palette and proportions follow Netflix's own tokens: a #141414 canvas so the
+ * artwork is the only bright thing on screen, red reserved almost entirely for
+ * progress and the focused state, and a three-step text ramp. Sizing follows
+ * TV guidance rather than web: 80px side margins and nothing under ~20px.
+ */
+
+:root {
+  --bg: #141414;
+  --surface: #1f1f1f;
+  --surface-2: #2a2a2a;
+  --line: #333333;
+
+  --ink: #ffffff;
+  --ink-2: #b3b3b3;
+  --ink-3: #808080;
+
+  --red: #e50914;
+  --red-dark: #b20710;
+
+  --radius: 4px;
+  --safe: 80px;
+
+  /* Netflix Sans isn't public; this grotesque stack is its closest relative. */
+  --font: 'Helvetica Neue', Helvetica, Arial, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 22px/1.4 var(--font);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+[hidden] {
+  display: none !important;
+}

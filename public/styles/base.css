@@ -1,0 +1,62 @@
+/* Document defaults, buttons and the focus treatment shared by every screen. */
+
+/* ---------------------------------------------------------------- buttons */
+
+.btn {
+  appearance: none;
+  border: 0;
+  font: 600 22px/1 var(--font);
+  padding: 17px 32px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  white-space: nowrap;
+  background: rgba(109, 109, 110, 0.7);
+  color: var(--ink);
+  transition: background 0.12s;
+}
+
+.btn:hover {
+  background: rgba(109, 109, 110, 0.5);
+}
+
+/* The white "Play" pill is Netflix's one loud call to action. */
+.btn.primary {
+  background: var(--ink);
+  color: #000;
+}
+
+.btn.primary:hover {
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.btn.small {
+  font-size: 19px;
+  padding: 12px 20px;
+  background: rgba(42, 42, 42, 0.9);
+  border: 1px solid var(--line);
+}
+
+.btn.small.on {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #000;
+}
+
+/* ---------------------------------------------------------------- focus */
+
+/* Netflix signals focus mainly by scale plus a white edge; red stays for
+   progress so the two never compete. */
+[data-focus].tv-focus,
+[data-focus]:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.card.tv-focus,
+.card:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 0;
+}
