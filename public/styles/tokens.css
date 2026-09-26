@@ -1,32 +1,149 @@
-/* Design tokens. Netflix's own palette and scale, in one place
-   so a colour is never invented halfway down a file. */
+/* Design tokens, from DESIGN-apple.md. A colour, size or radius is never
+   invented halfway down a file -- it comes from here.
 
-/* Netflix-style 10-foot UI.
- *
- * Palette and proportions follow Netflix's own tokens: a #141414 canvas so the
- * artwork is the only bright thing on screen, red reserved almost entirely for
- * progress and the focused state, and a three-step text ramp. Sizing follows
- * TV guidance rather than web: 80px side margins and nothing under ~20px.
- */
+   Two deliberate departures from the source document, both forced by the medium:
+
+   1. DARK SURFACES, NOT LIGHT. Apple's web canvas is white and parchment. This
+      is a cinema, watched in a dark room, and a white screen at 50 inches is
+      punishing. The document's own dark product tiles (#272729 / #2a2a2c /
+      #252527) are first-class surfaces in the system, so the interface is built
+      from those instead. It also serves the central idea -- UI recedes so the
+      product speaks -- because here the product is the film artwork, and it can
+      only be the brightest thing on screen if nothing else is.
+
+   2. THE TYPE RAMP IS SCALED. Apple sets body copy at 17px for a screen two feet
+      away. A television is ten feet away. Every size below is Apple's own
+      value multiplied by --scale, which preserves the ramp's proportions and
+      its tracking exactly while making it legible from a sofa. On a phone
+      --scale drops to 1 and the sizes become literally Apple's, which is the
+      distance they were designed for.
+
+   Everything else -- the single blue accent, the weight ladder, the radius
+   grammar, the one shadow -- is followed as written. */
 
 :root {
-  --bg: #141414;
-  --surface: #1f1f1f;
-  --surface-2: #2a2a2a;
-  --line: #333333;
+  /* 1.3 puts Apple's 17px body at 22px, which is the floor for 10-foot
+     reading. responsive.css steps this down for closer screens. */
+  --scale: 1.3;
 
-  --ink: #ffffff;
-  --ink-2: #b3b3b3;
-  --ink-3: #808080;
+  /* ------------------------------------------------------------ surfaces */
 
-  --red: #e50914;
-  --red-dark: #b20710;
+  /* The dark tile stack. The micro-steps between them exist so two adjacent
+     dark areas separate without needing a border. */
+  --canvas: #252527; /* surface-tile-3: the page itself */
+  --tile: #272729; /* surface-tile-1: the primary dark tile */
+  --tile-2: #2a2a2c; /* surface-tile-2: a step up, for raised chrome */
+  --black: #000000; /* true void: the nav bar and the video frame */
 
-  --radius: 4px;
-  --safe: 80px;
+  /* Translucent grey chip, for controls that float over photography.
+     0.64 alpha is the production value quoted in the document. */
+  --chip-translucent: rgba(210, 210, 215, 0.64);
 
-  /* Netflix Sans isn't public; this grotesque stack is its closest relative. */
-  --font: 'Helvetica Neue', Helvetica, Arial, -apple-system, BlinkMacSystemFont, sans-serif;
+  /* ------------------------------------------------------------ ink */
+
+  --ink: #1d1d1f; /* near-black, for text on light or blue fills */
+  --on-dark: #ffffff; /* text on a dark tile */
+  --body-muted: #cccccc; /* secondary copy on dark, where white is too loud */
+  --ink-muted-48: #7a7a7a; /* disabled and legal fine print only */
+
+  /* ------------------------------------------------------------ accent */
+
+  /* One interactive colour, and no second brand colour exists. Action Blue
+     fills buttons; Sky Link Blue is its dark-surface sibling, used wherever
+     Action Blue would sink into the tile -- progress bars, inline links. */
+  --primary: #0066cc;
+  --primary-focus: #0071e3;
+  --primary-on-dark: #2997ff;
+  --on-primary: #ffffff;
+
+  /* ------------------------------------------------------------ hairlines */
+
+  /* Apple's #e0e0e0 hairline assumes a light surface. The document lists
+     dark-surface borders as a known gap, so this is the equivalent derived
+     against the tile stack: visible, but not a drawn line. */
+  --hairline: rgba(255, 255, 255, 0.11);
+  --hairline-strong: rgba(255, 255, 255, 0.28);
+
+  /* ------------------------------------------------------------ type */
+
+  /* system-ui first so Apple hardware resolves the real SF Pro. A television
+     has neither SF Pro nor any way to fetch a webfont -- the server is on a
+     LAN with no internet -- so the grotesque fallbacks matter. */
+  --font:
+    -apple-system, BlinkMacSystemFont, system-ui, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+  /* Apple's sizes x --scale. Tracking is expressed in em rather than the
+     document's px so it stays correct at every scale. */
+  --text-hero: calc(56px * var(--scale));
+  --text-display-lg: calc(40px * var(--scale));
+  --text-display-md: calc(34px * var(--scale));
+  --text-lead: calc(28px * var(--scale));
+  --text-tagline: calc(21px * var(--scale));
+  --text-body: calc(17px * var(--scale));
+  --text-caption: calc(14px * var(--scale));
+  --text-fine: calc(12px * var(--scale));
+
+  --track-hero: -0.005em;
+  --track-display-md: -0.011em;
+  --track-lead: 0.007em;
+  --track-tagline: 0.011em;
+  --track-body: -0.022em;
+  --track-caption: -0.016em;
+  --track-fine: -0.01em;
+
+  /* The ladder is 300 / 400 / 600 / 700. 500 is deliberately absent, so a
+     mid-weight reading always resolves to 600. */
+  --weight-body: 400;
+  --weight-strong: 600;
+
+  --leading-display: 1.1;
+  --leading-body: 1.47;
+
+  /* ------------------------------------------------------------ shape */
+
+  --r-sm: 8px; /* compact utility chrome */
+  --r-md: 11px; /* the rare pearl capsule */
+  --r-lg: 18px; /* utility cards and panels */
+  --r-pill: 9999px; /* anything that reads as an action */
+
+  /* ------------------------------------------------------------ space */
+
+  --space-xxs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 17px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-xxl: 48px;
+  --space-section: 80px;
+
+  /* The side margin. 80px is Apple's section rhythm and also the TV safe
+     area, so the two agree. */
+  --safe: var(--space-section);
+
+  /* ------------------------------------------------------------ depth */
+
+  /* The only shadow in the system, and it belongs to artwork resting on a
+     surface. Never on buttons, cards or text. */
+  --shadow-product: rgba(0, 0, 0, 0.22) 3px 5px 30px 0;
+
+  /* Frosted chrome floating over content. */
+  --blur: saturate(180%) blur(20px);
+
+  /* Apple specifies a 2px focus ring for a screen at arm's length. A remote
+     user scanning a row from ten feet needs to find it instantly, so it is
+     thicker here and narrows again on small screens. */
+  --focus-ring: 4px;
+
+  /* Focus blue is specified against a white page. Ringing a #0066cc button with
+     #0071e3 on a dark canvas is very nearly invisible -- the two blues differ by
+     almost nothing -- which would hide the single most important thing on a
+     remote-driven screen. So the ring takes the dark-surface blue, by the same
+     rule the document already applies to links on tiles. */
+  --focus-ring-color: var(--primary-on-dark);
+
+  /* The system-wide press micro-interaction. */
+  --press: scale(0.95);
 }
 
 * {
@@ -40,9 +157,10 @@ body {
 
 body {
   margin: 0;
-  background: var(--bg);
-  color: var(--ink);
-  font: 400 22px/1.4 var(--font);
+  background: var(--canvas);
+  color: var(--on-dark);
+  font: var(--weight-body) var(--text-body) / var(--leading-body) var(--font);
+  letter-spacing: var(--track-body);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
