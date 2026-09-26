@@ -5,3 +5,8 @@
 # Compiled browser code -- source lives in client/
 public/app/
 node_modules/
+
+# Local settings: which folders to scan differs per machine, and the paths are
+# nobody else's business. config.example.json is the tracked copy.
+config.json
+.env

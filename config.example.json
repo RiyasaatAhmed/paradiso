@@ -1,9 +1,11 @@
 {
+  "//": "Copy this to config.json and edit it. start.sh does that for you on first run.",
+
   "port": 8080,
 
-  "//libraries": "Folders to scan. ~ is expanded. Add more anytime, then hit Rescan in the app.",
+  "//libraries": "Folders to scan. ~ is expanded. Add more anytime, then press Rescan in the app.",
   "libraries": [
-    "~/Desktop/CP",
+    "~/Movies",
     "~/Downloads"
   ],
 
@@ -15,9 +17,8 @@
 
   "//exclude": "Folder name patterns to skip entirely. Supports * wildcards.",
   "exclude": [
-    "ZeroToMastery*",
-    "Zoom",
     "node_modules",
+    ".*",
     "*.app",
     "Library"
   ]
