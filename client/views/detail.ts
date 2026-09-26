@@ -8,7 +8,7 @@ import {
 } from '../../shared/contracts.ts';
 import { MODE_DESCRIPTIONS, MODE_LABELS, MODE_LADDER, type PlaybackMode } from '../../shared/playback.ts';
 import { appendAll, byId, clear, el, focusableButton } from '../core/dom.ts';
-import { formatClock, formatDuration } from '../core/format.ts';
+import { folderName, formatClock, formatDuration } from '../core/format.ts';
 import type { Store } from '../core/store.ts';
 import type { FocusManager } from '../navigation/focus.ts';
 
@@ -40,7 +40,13 @@ export interface DetailOptions {
   store: Store;
   focus: FocusManager;
   onPlay: (request: PlaybackRequest) => void;
+  /** Called after the screen has closed, to put focus back where it came from. */
   onBack: (lastId: string | null) => void;
+  /**
+   * The viewer asked to leave. Separate from `close` so that leaving goes
+   * through history -- `close` is what history calls once it has decided.
+   */
+  onDismiss: () => void;
 }
 
 /**
@@ -50,7 +56,13 @@ export interface DetailOptions {
  * mode. They are all defaulted sensibly, so the screen reads as "press Play"
  * unless someone goes looking.
  */
-export function createDetailScreen({ store, focus, onPlay, onBack }: DetailOptions): DetailScreen {
+export function createDetailScreen({
+  store,
+  focus,
+  onPlay,
+  onBack,
+  onDismiss,
+}: DetailOptions): DetailScreen {
   const root = byId('sheet');
 
   let item: LibraryItem | null = null;
@@ -122,7 +134,7 @@ export function createDetailScreen({ store, focus, onPlay, onBack }: DetailOptio
     const meta = clear(byId('sheetSpecs'));
     const facts: string[] = [];
     if (media.duration) facts.push(formatDuration(media.duration));
-    facts.push(current.folder, current.sizeLabel);
+    facts.push(folderName(current.folder), current.sizeLabel);
 
     facts.forEach((fact, index) => {
       if (index > 0) meta.appendChild(el('span', 'dot', '•'));
@@ -151,7 +163,7 @@ export function createDetailScreen({ store, focus, onPlay, onBack }: DetailOptio
       actions.appendChild(focusableButton('btn primary', '▶  Play', () => start(0)));
     }
 
-    actions.appendChild(focusableButton('btn', 'Back', close));
+    actions.appendChild(focusableButton('btn', 'Back', onDismiss));
   }
 
   function renderOptions(media: MediaInfo): void {

@@ -46,9 +46,12 @@ export interface PlayerScreen {
 export function createPlayerScreen({
   focus,
   onExit,
+  onDismiss,
 }: {
   focus: FocusManager;
   onExit: (lastId: string) => void;
+  /** The viewer asked to leave; history decides what that means. */
+  onDismiss: () => void;
 }): PlayerScreen {
   const root = byId('player');
   const video = byId<HTMLVideoElement>('video');
@@ -393,7 +396,7 @@ export function createPlayerScreen({
         loadStream(position());
       })
     );
-    actions.appendChild(focusableButton('btn', 'Back to list', exit));
+    actions.appendChild(focusableButton('btn', 'Back to list', onDismiss));
 
     box.hidden = false;
     showControls();
@@ -414,7 +417,7 @@ export function createPlayerScreen({
   video.addEventListener('ended', () => {
     // On a remuxed stream 'ended' can mean the fragment ran dry rather than the
     // film finishing, so only leave if we are genuinely near the end.
-    if (!duration() || position() > duration() - NEAR_END_SECONDS) exit();
+    if (!duration() || position() > duration() - NEAR_END_SECONDS) onDismiss();
     else setSpinner(true);
   });
 

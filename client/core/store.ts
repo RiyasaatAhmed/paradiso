@@ -12,7 +12,13 @@ export interface Store {
   readonly continueWatching: LibraryItem[];
   readonly byFolder: Map<string, LibraryItem[]>;
   toggleShowAll(): void;
+  setShowAll(value: boolean): void;
+  /** Whether a folder exists at all, filter or no filter. */
+  hasFolder(folder: string): boolean;
   refresh(): Promise<void>;
+  /** Across everything, not only what is currently visible: a link may name a
+   *  file the size filter is hiding. */
+  find(id: string): LibraryItem | null;
   progressFor(id: string): ResumePosition | null;
   describe(id: string): Promise<MediaResponse>;
 }
@@ -87,11 +93,23 @@ export function createStore(): Store {
       showAll = !showAll;
     },
 
+    setShowAll(value) {
+      showAll = value;
+    },
+
+    hasFolder(folder) {
+      return items.some((item) => item.folder === folder);
+    },
+
     async refresh() {
       const data = await api.fetchLibrary();
       items = data.items;
       progress = data.progress ?? {};
       minSizeMB = data.minSizeMB;
+    },
+
+    find(id) {
+      return items.find((item) => item.id === id) ?? null;
     },
 
     progressFor(id) {
