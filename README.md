@@ -344,10 +344,13 @@ gets a phone-shaped version rather than a shrunken TV one.
 
 ## Using it
 
-Laid out like Netflix: a billboard across the top showing whatever you are
-resting on, then horizontal rows underneath — **Continue Watching** first, then
-one row per folder. Red is reserved for progress, so the only red on screen is
-the scrubber and the resume line under a thumbnail.
+A billboard across the top showing whatever you are resting on, then horizontal
+rows underneath — **Continue Watching** first, then one row per folder.
+
+The interface is deliberately quiet, so the film artwork is the only bright thing
+on screen. One blue carries everything you can act on — the Play button, the
+focus ring, the scrubber, the progress line under a thumbnail — and nothing else
+is coloured at all.
 
 | Key | What it does |
 | --- | --- |
@@ -359,7 +362,7 @@ the scrubber and the resume line under a thumbnail.
 | **F** *(keyboard only)* | Toggle full screen |
 
 Where you stopped is remembered, so a half-watched film shows a **Resume**
-button, a red progress line on its thumbnail, and a place in Continue Watching.
+button, a progress line on its thumbnail, and a place in Continue Watching.
 
 Added new files? Press **Rescan** in the app — no restart needed.
 
