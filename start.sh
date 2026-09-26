@@ -4,7 +4,14 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 if ! command -v ffmpeg >/dev/null 2>&1; then
-  echo "  ffmpeg is missing. Install it with:  brew install ffmpeg"
+  echo "  ffmpeg is missing. Install it with:"
+  echo "    macOS:   brew install ffmpeg"
+  echo "    Debian:  sudo apt install ffmpeg"
+  exit 1
+fi
+
+if ! command -v node >/dev/null 2>&1; then
+  echo "  Node is missing. Install Node 24 or newer from https://nodejs.org"
   exit 1
 fi
 
@@ -13,7 +20,7 @@ fi
 # "Cannot find module" rather than anything about versions.
 NODE_MAJOR="$(node -p 'process.versions.node.split(".")[0]')"
 if [ "$NODE_MAJOR" -lt 24 ]; then
-  echo "  Node 24+ is required (found $(node -v)). Upgrade with:  brew upgrade node"
+  echo "  Node 24+ is required (found $(node -v)). See https://nodejs.org"
   exit 1
 fi
 

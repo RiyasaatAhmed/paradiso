@@ -29,7 +29,12 @@ export async function assertFfmpegAvailable(): Promise<void> {
     await run('ffmpeg', ['-version']);
     await run('ffprobe', ['-version']);
   } catch {
-    throw new Error('ffmpeg and ffprobe are required. Install them with:  brew install ffmpeg');
+    throw new Error(
+      'ffmpeg and ffprobe are required, and neither is on PATH.\n' +
+        '       macOS:   brew install ffmpeg\n' +
+        '       Debian:  sudo apt install ffmpeg\n' +
+        '       Windows: winget install Gyan.FFmpeg'
+    );
   }
 }
 
