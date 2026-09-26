@@ -55,13 +55,26 @@ export function createStore(): Store {
         .sort((a, b) => (progress[b.id]?.at ?? 0) - (progress[a.id]?.at ?? 0));
     },
 
-    /** Items grouped by folder, preserving the newest-first ordering. */
+    /**
+     * Items grouped by folder.
+     *
+     * Newest-first within a folder, except where the folder holds episodes --
+     * a series has an order of its own, and showing it in download order makes
+     * a season unreadable. Mixed folders fall back to newest-first, since a
+     * partial episode ordering would be more confusing than none.
+     */
     get byFolder() {
       const groups = new Map<string, LibraryItem[]>();
       for (const item of store.visibleItems) {
         const group = groups.get(item.folder);
         if (group) group.push(item);
         else groups.set(item.folder, [item]);
+      }
+
+      for (const group of groups.values()) {
+        if (group.every((item) => item.episode !== null)) {
+          group.sort((a, b) => (a.episode ?? 0) - (b.episode ?? 0));
+        }
       }
       return groups;
     },

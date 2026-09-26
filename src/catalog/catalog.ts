@@ -7,7 +7,7 @@ import type { LibraryItem } from '../../shared/contracts.ts';
 import type { Config } from '../config.ts';
 import { formatSize } from '../support/format.ts';
 import { findVideoFiles } from './scanner.ts';
-import { prettyTitle } from './titles.ts';
+import { episodeOrder, prettyTitle } from './titles.ts';
 
 /** A library item plus the absolute path, which only the server may see. */
 export interface LibraryEntry extends LibraryItem {
@@ -74,12 +74,14 @@ export class Catalog {
   #describe(absPath: string, stats: Stats): LibraryEntry {
     const library = this.#config.libraries.find((lib) => absPath.startsWith(lib + path.sep));
     const folderBase = library ? path.dirname(library) : path.dirname(absPath);
+    const file = path.basename(absPath);
 
     return {
       id: idFor(absPath),
       absPath,
-      file: path.basename(absPath),
-      title: prettyTitle(path.basename(absPath)),
+      file,
+      title: prettyTitle(file),
+      episode: episodeOrder(file),
       folder: path.relative(folderBase, path.dirname(absPath)) || path.basename(folderBase),
       size: stats.size,
       sizeLabel: formatSize(stats.size),

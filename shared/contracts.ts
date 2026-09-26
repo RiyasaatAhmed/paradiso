@@ -19,6 +19,13 @@ export interface LibraryItem {
   mtime: number;
   /** Below the configured size filter: hidden until "Show everything". */
   small: boolean;
+  /**
+   * Position within its series, when the filename carries an episode marker.
+   * Null for anything that is not an episode. A folder holding these is ordered
+   * by this rather than by modification time -- a series should read in the
+   * order it was made, not the order it happened to be downloaded.
+   */
+  episode: number | null;
 }
 
 export interface VideoStream {
