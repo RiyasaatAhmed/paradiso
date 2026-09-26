@@ -2,6 +2,8 @@
 
 /* ---------------------------------------------------------------- top bar */
 
+/* The frosted sub-nav treatment: the tile colour at 80% with a saturating blur
+   behind it, so the bar floats over artwork instead of covering it. */
 .topbar {
   position: fixed;
   top: 0;
@@ -10,45 +12,64 @@
   z-index: 40;
   display: flex;
   align-items: center;
-  gap: 24px;
-  padding: 26px var(--safe);
-  /* Transparent over the billboard, solid once you scroll past it. */
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.75), transparent);
-  transition: background 0.25s;
+  gap: var(--space-lg);
+  padding: var(--space-md) var(--safe);
+  background: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  transition:
+    background 0.25s,
+    backdrop-filter 0.25s;
 }
 
+/* Over the billboard the bar carries no fill at all -- the billboard's own
+   scrim already darkens the top of the frame. It frosts once you scroll past. */
 .topbar.solid {
-  background: var(--bg);
+  background: rgba(37, 37, 39, 0.8);
+  -webkit-backdrop-filter: var(--blur);
+  backdrop-filter: var(--blur);
 }
 
+/* The wordmark. No accent colour: the single blue belongs to things you can
+   press, and a logo is not one of them. */
 .brand {
-  color: var(--red);
-  font-size: 30px;
-  font-weight: 800;
-  letter-spacing: 0.16em;
+  color: var(--on-dark);
+  font-size: var(--text-tagline);
+  font-weight: var(--weight-strong);
+  letter-spacing: 0.04em;
 }
 
 .topbar-actions {
   margin-left: auto;
   display: flex;
-  gap: 12px;
+  gap: var(--space-sm);
 }
 
+/* Utility chrome, in the compact rect grammar -- these are settings, not
+   actions, so they must not look like the blue pills. */
 .chip {
   appearance: none;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  background: rgba(0, 0, 0, 0.35);
-  color: var(--ink);
-  font: 500 19px/1 var(--font);
-  padding: 12px 20px;
-  border-radius: var(--radius);
+  border: 1px solid var(--hairline-strong);
+  background: rgba(29, 29, 31, 0.72);
+  -webkit-backdrop-filter: var(--blur);
+  backdrop-filter: var(--blur);
+  color: var(--on-dark);
+  font: var(--weight-body) var(--text-caption) / 1 var(--font);
+  letter-spacing: var(--track-caption);
+  padding: calc(8px * var(--scale)) calc(15px * var(--scale));
+  border-radius: var(--r-sm);
   cursor: pointer;
+  transition: transform 0.12s ease;
 }
 
 .chip.on {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: #000;
+  border: 2px solid var(--primary-focus);
+  font-weight: var(--weight-strong);
+  padding: calc(7px * var(--scale)) calc(14px * var(--scale));
+}
+
+.chip:active {
+  transform: var(--press);
 }
 
 /* ---------------------------------------------------------------- billboard */
@@ -57,7 +78,7 @@
   position: relative;
   height: 62vh;
   min-height: 460px;
-  margin-bottom: 8px;
+  margin-bottom: var(--space-xs);
 }
 
 .billboard-art,
@@ -72,13 +93,22 @@
   background-repeat: no-repeat;
 }
 
+/* These two scrims are the one place gradients appear. They are not decoration:
+   white text over an unknown film still is unreadable without them, and the
+   document's answer to legibility over photography is a darkened canvas rather
+   than a shadow behind the letters. */
 .billboard-fade-left {
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
-  background: linear-gradient(to right, rgba(20, 20, 20, 0.95) 0%, rgba(20, 20, 20, 0.6) 38%, rgba(20, 20, 20, 0) 70%);
+  background: linear-gradient(
+    to right,
+    rgba(37, 37, 39, 0.94) 0%,
+    rgba(37, 37, 39, 0.6) 38%,
+    rgba(37, 37, 39, 0) 70%
+  );
 }
 
 .billboard-fade-bottom {
@@ -87,75 +117,84 @@
   right: 0;
   bottom: 0;
   left: 0;
-  background: linear-gradient(to top, var(--bg) 0%, rgba(20, 20, 20, 0.5) 22%, rgba(20, 20, 20, 0) 55%);
+  background: linear-gradient(
+    to top,
+    var(--canvas) 0%,
+    rgba(37, 37, 39, 0.5) 22%,
+    rgba(37, 37, 39, 0) 55%
+  );
 }
 
 .billboard-body {
   position: absolute;
   left: var(--safe);
-  bottom: 74px;
+  bottom: var(--space-section);
   max-width: 44%;
 }
 
+/* Hero display weight 600, never 700 or 800, with the signature tight tracking.
+   No text-shadow -- the scrim above is what makes this readable. */
 .billboard-title {
-  margin: 0 0 18px;
-  font-size: 62px;
-  line-height: 1.05;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.7);
+  margin: 0 0 var(--space-md);
+  font-size: var(--text-hero);
+  line-height: 1.07;
+  font-weight: var(--weight-strong);
+  letter-spacing: var(--track-hero);
 }
 
 .billboard-meta {
-  color: var(--ink-2);
-  font-size: 21px;
-  margin-bottom: 26px;
+  color: var(--body-muted);
+  font-size: var(--text-body);
+  letter-spacing: var(--track-body);
+  margin-bottom: var(--space-lg);
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: var(--space-sm);
   flex-wrap: wrap;
 }
 
 .billboard-actions,
 .detail-actions {
   display: flex;
-  gap: 14px;
+  gap: var(--space-sm);
   flex-wrap: wrap;
 }
 
 /* ---------------------------------------------------------------- rows */
 
 #rows {
-  padding-bottom: 90px;
+  padding-bottom: var(--space-section);
 }
 
 /* When there is no billboard the first row must clear the fixed top bar. */
 #rows.no-billboard {
-  padding-top: 132px;
+  padding-top: calc(var(--space-section) + var(--space-xxl));
 }
 
 .row {
-  margin-bottom: 14px;
+  margin-bottom: var(--space-md);
 }
 
 .row-title {
-  margin: 0 0 12px;
+  margin: 0 0 var(--space-sm);
   padding: 0 var(--safe);
-  font-size: 26px;
-  font-weight: 700;
-  color: #e5e5e5;
-  letter-spacing: 0.01em;
+  font-size: var(--text-tagline);
+  font-weight: var(--weight-strong);
+  letter-spacing: var(--track-tagline);
+  color: var(--on-dark);
 }
 
 .row-track {
   display: flex;
-  gap: 12px;
+  /* The document's grid gutter, and also the clearance a focused card needs:
+     it grows 7% and carries a ring, which a tighter gap would let it overlap. */
+  gap: var(--space-lg);
   overflow-x: auto;
   overflow-y: hidden;
   scroll-behavior: smooth;
   /* Vertical padding leaves room for the focused card to grow without clipping,
      which overflow-x alone would otherwise cut off. */
-  padding: 22px var(--safe);
+  padding: var(--space-lg) var(--safe);
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
 }
@@ -175,23 +214,31 @@
   font: inherit;
   text-align: left;
   cursor: pointer;
-  border-radius: var(--radius);
-  transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease;
+  border-radius: var(--r-lg);
+  transition: transform 0.18s ease;
 }
 
+/* Focus lifts the artwork off the canvas, and this is the single shadow the
+   system allows -- it is here because the thing being lifted is a picture
+   resting on a surface, which is exactly what it is reserved for. */
 .card.tv-focus {
   transform: scale(1.07);
   z-index: 2;
-  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.75);
+}
+
+.card.tv-focus .thumb {
+  box-shadow: var(--shadow-product);
+}
+
+.card:active {
+  transform: var(--press);
 }
 
 .thumb {
   position: relative;
-  border-radius: var(--radius);
+  border-radius: var(--r-lg);
   overflow: hidden;
-  background: var(--surface);
+  background: var(--tile);
 }
 
 .thumb::before {
@@ -227,45 +274,53 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 44px;
-  color: var(--ink-3);
+  font-size: var(--text-display-lg);
+  color: var(--ink-muted-48);
 }
 
+/* The translucent grey chip, which is the system's answer to a control or label
+   sitting on top of photography. */
 .badge {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  background: rgba(0, 0, 0, 0.7);
-  padding: 4px 9px;
-  border-radius: 3px;
-  font-size: 15px;
-  color: #e5e5e5;
+  top: var(--space-sm);
+  right: var(--space-sm);
+  background: var(--chip-translucent);
+  -webkit-backdrop-filter: var(--blur);
+  backdrop-filter: var(--blur);
+  color: var(--ink);
+  padding: var(--space-xxs) var(--space-xs);
+  border-radius: var(--r-sm);
+  font-size: var(--text-fine);
+  font-weight: var(--weight-strong);
+  letter-spacing: var(--track-fine);
 }
 
-/* Netflix's thin red remaining-progress line along the bottom of the art. */
+/* How far through a title you are. Sky Link Blue, because the system has one
+   accent and this is a dark surface. */
 .resume-bar {
   position: absolute;
-  left: 8px;
-  right: 8px;
-  bottom: 8px;
+  left: var(--space-xs);
+  right: var(--space-xs);
+  bottom: var(--space-xs);
   height: 4px;
-  background: rgba(255, 255, 255, 0.35);
-  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: var(--r-pill);
   overflow: hidden;
 }
 
 .resume-bar span {
   display: block;
   height: 100%;
-  background: var(--red);
+  background: var(--primary-on-dark);
 }
 
 .card-title {
-  margin: 12px 2px 2px;
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 1.3;
-  color: #e5e5e5;
+  margin: var(--space-sm) 2px 2px;
+  font-size: var(--text-body);
+  font-weight: var(--weight-strong);
+  line-height: 1.24;
+  letter-spacing: var(--track-body);
+  color: var(--on-dark);
   display: -webkit-box;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
@@ -274,22 +329,26 @@
 
 .card-sub {
   margin: 0 2px;
-  color: var(--ink-3);
-  font-size: 17px;
+  color: var(--body-muted);
+  font-size: var(--text-caption);
+  letter-spacing: var(--track-caption);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .empty {
-  color: var(--ink-2);
-  font-size: 24px;
-  line-height: 1.7;
-  padding: 180px var(--safe) 60px;
+  color: var(--body-muted);
+  font-size: var(--text-lead);
+  line-height: var(--leading-body);
+  padding: calc(var(--space-section) * 2) var(--safe) var(--space-section);
+  max-width: 980px;
 }
 
 .empty code {
-  background: var(--surface);
-  padding: 3px 9px;
-  border-radius: 3px;
+  background: var(--tile-2);
+  border: 1px solid var(--hairline);
+  padding: 2px var(--space-xs);
+  border-radius: var(--r-sm);
+  font-size: 0.9em;
 }

@@ -9,81 +9,97 @@
   bottom: 0;
   left: 0;
   z-index: 60;
-  background: var(--bg);
+  background: var(--canvas);
   overflow-y: auto;
 }
 
 /* The detail page carries far more text than the billboard, so its scrim is much
    heavier -- the still is atmosphere here, not the subject. */
 .detail .billboard-fade-left {
-  background: linear-gradient(to right, rgba(20, 20, 20, 0.98) 0%, rgba(20, 20, 20, 0.88) 45%, rgba(20, 20, 20, 0.5) 100%);
+  background: linear-gradient(
+    to right,
+    rgba(37, 37, 39, 0.98) 0%,
+    rgba(37, 37, 39, 0.9) 45%,
+    rgba(37, 37, 39, 0.55) 100%
+  );
 }
 
 .detail .billboard-fade-bottom {
-  background: linear-gradient(to top, var(--bg) 0%, rgba(20, 20, 20, 0.94) 28%, rgba(20, 20, 20, 0.35) 72%);
+  background: linear-gradient(
+    to top,
+    var(--canvas) 0%,
+    rgba(37, 37, 39, 0.95) 28%,
+    rgba(37, 37, 39, 0.38) 72%
+  );
 }
 
 .detail-body {
   position: relative;
-  padding: 0 var(--safe) 70px;
+  padding: 0 var(--safe) var(--space-section);
   margin-top: 40vh;
-  max-width: 1100px;
+  /* Apple holds text-heavy sections to roughly this measure. */
+  max-width: 980px;
 }
 
 .detail-title {
-  margin: 0 0 16px;
-  font-size: 54px;
-  line-height: 1.08;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.7);
+  margin: 0 0 var(--space-md);
+  font-size: var(--text-display-lg);
+  line-height: var(--leading-display);
+  font-weight: var(--weight-strong);
+  letter-spacing: 0;
 }
 
 .detail-meta {
-  color: var(--ink-2);
-  font-size: 21px;
-  margin-bottom: 30px;
+  color: var(--body-muted);
+  font-size: var(--text-body);
+  letter-spacing: var(--track-body);
+  margin-bottom: var(--space-lg);
   display: flex;
-  gap: 14px;
+  gap: var(--space-sm);
   flex-wrap: wrap;
   align-items: center;
 }
 
 .dot {
-  color: var(--ink-3);
+  color: var(--ink-muted-48);
 }
 
+/* A fact about the file -- resolution, codec, language. A hairline rect, not a
+   pill: pills are for things you can press. */
 .tag {
-  border: 1px solid var(--line);
-  padding: 3px 10px;
-  border-radius: 3px;
-  font-size: 16px;
-  color: var(--ink-2);
-  letter-spacing: 0.04em;
+  border: 1px solid var(--hairline);
+  padding: 2px var(--space-xs);
+  border-radius: var(--r-sm);
+  font-size: var(--text-caption);
+  letter-spacing: var(--track-caption);
+  color: var(--body-muted);
 }
 
 .opt-group {
-  margin-top: 30px;
+  margin-top: var(--space-xl);
 }
 
+/* Sentence case at caption-strong. The interface has no small-caps or
+   wide-tracked micro-labels anywhere -- that is a different design language. */
 .opt-label {
-  font-size: 16px;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--ink-3);
-  margin-bottom: 12px;
+  font-size: var(--text-caption);
+  font-weight: var(--weight-strong);
+  letter-spacing: var(--track-caption);
+  color: var(--body-muted);
+  margin-bottom: var(--space-sm);
 }
 
 .opt-row {
   display: flex;
-  gap: 10px;
+  gap: var(--space-xs);
   flex-wrap: wrap;
 }
 
 .hint {
-  color: var(--ink-3);
-  font-size: 18px;
-  margin-top: 16px;
-  line-height: 1.5;
+  color: var(--body-muted);
+  font-size: var(--text-caption);
+  letter-spacing: var(--track-caption);
+  margin-top: var(--space-md);
+  line-height: var(--leading-body);
   max-width: 760px;
 }
