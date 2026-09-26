@@ -9,6 +9,7 @@
 import type { LibraryItem } from '../../shared/contracts.ts';
 import { api } from '../core/api.ts';
 import { el, focusableButton } from '../core/dom.ts';
+import { folderName } from '../core/format.ts';
 import type { Store } from '../core/store.ts';
 
 export interface CardOptions {
@@ -26,7 +27,9 @@ export function buildCard({ store, item, onSelect, onFocus, subtitle }: CardOpti
   card.setAttribute('data-id', item.id);
   card.appendChild(buildThumb(store, item));
   card.appendChild(el('div', 'card-title', item.title));
-  card.appendChild(el('div', 'card-sub', subtitle ?? item.folder));
+  // The folder's name, never its path: a card is too narrow to spend half its
+  // width on the route to the file.
+  card.appendChild(el('div', 'card-sub', subtitle ?? folderName(item.folder)));
 
   if (onFocus) card.addEventListener('focus', () => onFocus(item));
   return card;
