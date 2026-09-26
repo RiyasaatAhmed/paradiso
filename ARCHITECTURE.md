@@ -175,6 +175,30 @@ that tag corrupts the `hvcC` box on rips that keep parameter sets in-band, which
 makes them unplayable everywhere. It cost a debugging session to find, so it has
 a regression guard.
 
+## The container image
+
+Two stages, for one reason: the browser half must be compiled, and nothing that
+compiles it is needed afterwards. The build stage installs npm dependencies and
+runs `tsc`; the runtime stage copies only `public/app/` out of it.
+
+Because the project has no runtime dependencies and Node runs the server from
+`.ts` directly, **the runtime stage contains no `node_modules` at all** — Node,
+ffmpeg, and the source. That is most of why the image is ~270 MB rather than the
+usual Node application size.
+
+Two things the container cannot do, both worth knowing before debugging it:
+
+- **No hardware encoder.** `detectH264Encoder()` finds no VideoToolbox inside
+  Linux and returns `libx264`, so `transcode` is software-encoded. `direct` and
+  `remux` are untouched, which is the overwhelming majority of files.
+- **No idea of its own address.** `lanAddresses()` reports the container's
+  network, which no TV can route to, so the banner refuses to guess and
+  `PARADISO_ANNOUNCE_HOST` supplies the real one instead.
+
+`PARADISO_CONFIG` and `PARADISO_CACHE` exist only so both can be mounted, which
+keeps the image read-only in practice — everything written at runtime goes to
+`/cache`.
+
 ## Type-checking strictness
 
 `strict`, plus `noUncheckedIndexedAccess`, `noImplicitReturns`, `noUnusedLocals`
