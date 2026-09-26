@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { prettyTitle } from '../src/catalog/titles.ts';
+import { episodeOrder, prettyTitle } from '../src/catalog/titles.ts';
 
 describe('prettyTitle', () => {
   it('strips a tracker prefix, release tags and brackets', () => {
@@ -37,5 +37,46 @@ describe('prettyTitle', () => {
 
   it('handles a name with no extension', () => {
     assert.equal(prettyTitle('Documentary'), 'Documentary');
+  });
+
+  // A folder of episodes repeats the series name on every single card, so the
+  // parenthesised episode name is the only thing telling them apart. Stripping
+  // it as though it were release noise made three hundred cards identical.
+  it('keeps a parenthesised episode name and leads with the marker', () => {
+    assert.equal(
+      prettyTitle('The Tom and Jerry Show - E023 (For the Love of Ruggles).mp4'),
+      'E023 · For the Love of Ruggles'
+    );
+  });
+
+  it('recognises a bare episode marker with no season', () => {
+    assert.equal(prettyTitle('Some Show - E7 (Pilot).mkv'), 'E007 · Pilot');
+  });
+
+  it('keeps the season when there is one', () => {
+    assert.equal(prettyTitle('Breaking Bad S02E05 (Breakage) 1080p BluRay.mkv'), 'S02E05 · Breakage');
+  });
+
+  it('still strips square brackets, which carry release metadata', () => {
+    assert.equal(prettyTitle('Show [S01E02] [Hindi] 1080p.mkv'), 'Show  S01E02');
+  });
+
+  it('drops parentheses holding a year rather than a name', () => {
+    assert.equal(prettyTitle('Interstellar (2014).mkv'), 'Interstellar');
+    assert.equal(prettyTitle('The Tom and Jerry Show (2014-2022).mkv'), 'The Tom and Jerry Show');
+  });
+});
+
+describe('episodeOrder', () => {
+  it('orders bare episode markers numerically, not as text', () => {
+    assert.ok(episodeOrder('Show - E009 (A).mp4')! < episodeOrder('Show - E100 (B).mp4')!);
+  });
+
+  it('keeps seasons apart, so a late episode never overtakes the next season', () => {
+    assert.ok(episodeOrder('Show S01E99 (A).mkv')! < episodeOrder('Show S02E01 (B).mkv')!);
+  });
+
+  it('is null for anything carrying no episode marker', () => {
+    assert.equal(episodeOrder('Some.Movie.2021.1080p.mkv'), null);
   });
 });
