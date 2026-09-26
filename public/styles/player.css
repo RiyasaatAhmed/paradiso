@@ -1,4 +1,7 @@
-/* The video player and its control bar. */
+/* The video player and its control bar.
+
+   Pure black here, not the tile colour: the document reserves #000 for true
+   void, and a video frame is the clearest case of it. */
 
 /* ---------------------------------------------------------------- player */
 
@@ -8,7 +11,7 @@
   right: 0;
   bottom: 0;
   left: 0;
-  background: #000;
+  background: var(--black);
   z-index: 100;
   display: flex;
   align-items: center;
@@ -18,24 +21,28 @@
 #video {
   width: 100%;
   height: 100%;
-  background: #000;
+  background: var(--black);
   display: block;
 }
 
 /* Rendered by hand rather than via <track>: native cues are too small for a TV
-   and cannot follow the virtual timeline used when seeking a remuxed stream. */
+   and cannot follow the virtual timeline used when seeking a remuxed stream.
+   Weight 600, since the ladder has no 500 and subtitles over bright footage
+   need the heavier of the two. The shadow is legibility, not decoration --
+   there is no scrim here to sit them on. */
 #subtitles {
   position: absolute;
   left: 10%;
   right: 10%;
   bottom: 10%;
   text-align: center;
-  font-size: 40px;
-  font-weight: 500;
+  font-size: var(--text-display-md);
+  font-weight: var(--weight-strong);
   line-height: 1.32;
-  color: #fff;
+  letter-spacing: var(--track-display-md);
+  color: var(--on-dark);
   text-shadow:
-    0 2px 5px #000,
+    0 2px 5px var(--black),
     0 0 16px rgba(0, 0, 0, 0.95);
   pointer-events: none;
   white-space: pre-wrap;
@@ -51,7 +58,7 @@
   width: 68px;
   height: 68px;
   border: 5px solid rgba(255, 255, 255, 0.22);
-  border-top-color: var(--red);
+  border-top-color: var(--primary-on-dark);
   border-radius: 50%;
   animation: spin 0.9s linear infinite;
 }
@@ -62,43 +69,59 @@
   }
 }
 
+/* A utility card, in the one radius the system gives panels. */
 .player-error {
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  padding: 38px 42px;
+  background: var(--tile-2);
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-lg);
+  padding: var(--space-xl) var(--space-xxl);
   max-width: 720px;
   text-align: center;
   z-index: 3;
 }
 
 .player-error h3 {
-  margin: 0 0 14px;
-  font-size: 30px;
+  margin: 0 0 var(--space-sm);
+  font-size: var(--text-display-md);
+  font-weight: var(--weight-strong);
+  letter-spacing: var(--track-display-md);
+  line-height: var(--leading-display);
 }
 
 .player-error p {
-  color: var(--ink-2);
-  margin: 0 0 26px;
-  line-height: 1.5;
-  font-size: 21px;
+  color: var(--body-muted);
+  margin: 0 0 var(--space-lg);
+  line-height: var(--leading-body);
+  font-size: var(--text-body);
+  letter-spacing: var(--track-body);
 }
 
 .player-error .detail-actions {
   justify-content: center;
 }
 
+/* ---------------------------------------------------------------- controls */
+
+/* The floating bar grammar -- a translucent surface with a saturating blur
+   behind it. Apple's own is parchment, because it floats over a white store
+   page; over film footage it has to be the dark counterpart. The gradient is
+   functional: it keeps the bar readable whatever frame is behind it. */
 #controls {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
-  padding: 150px var(--safe) 46px;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.6) 40%, transparent 100%);
+  padding: calc(var(--space-section) * 1.5) var(--safe) var(--space-xxl);
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.92) 0%,
+    rgba(0, 0, 0, 0.62) 40%,
+    transparent 100%
+  );
   opacity: 0;
   transform: translateY(12px);
   transition:
@@ -114,32 +137,33 @@
 }
 
 .controls-top {
-  margin-bottom: 26px;
+  margin-bottom: var(--space-lg);
 }
 
 .now-playing {
-  font-size: 40px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+  font-size: var(--text-display-md);
+  font-weight: var(--weight-strong);
+  letter-spacing: var(--track-display-md);
+  line-height: var(--leading-display);
 }
 
-/* --- scrubber: the one place red belongs */
+/* ---------------------------------------------------------------- scrubber */
 
 .scrub {
   display: flex;
   align-items: center;
-  gap: 26px;
-  margin-bottom: 22px;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-lg);
 }
 
 .track {
   flex: 1;
   height: 6px;
-  border-radius: 3px;
+  border-radius: var(--r-pill);
   background: rgba(255, 255, 255, 0.3);
   position: relative;
   cursor: pointer;
+  transition: height 0.12s;
 }
 
 .track .played {
@@ -147,8 +171,8 @@
   top: 0;
   bottom: 0;
   left: 0;
-  border-radius: 3px;
-  background: var(--red);
+  border-radius: var(--r-pill);
+  background: var(--primary-on-dark);
 }
 
 .track .knob {
@@ -156,13 +180,13 @@
   top: 50%;
   width: 20px;
   height: 20px;
-  border-radius: 50%;
-  background: var(--red);
+  border-radius: var(--r-pill);
+  background: var(--primary-on-dark);
   transform: translate(-50%, -50%);
   transition: transform 0.12s;
 }
 
-/* The bar thickens while the scrubber row holds focus, as Netflix's does. */
+/* The bar thickens while the scrubber row holds focus. */
 .scrub.active .track {
   height: 8px;
 }
@@ -173,24 +197,27 @@
 
 .time-left {
   font-variant-numeric: tabular-nums;
-  font-size: 22px;
-  font-weight: 600;
-  color: var(--ink);
-  min-width: 116px;
+  font-size: var(--text-body);
+  font-weight: var(--weight-strong);
+  letter-spacing: var(--track-body);
+  color: var(--on-dark);
+  min-width: 7ch;
   text-align: right;
 }
+
+/* ---------------------------------------------------------------- buttons */
 
 .player-buttons {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: var(--space-sm);
 }
 
 .pb-left,
 .pb-right {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: var(--space-sm);
 }
 
 /* Everything in this group sits at the far right of the bar. */
@@ -198,62 +225,61 @@
   margin-left: auto;
 }
 
+/* Utility chrome over photography: an ink chip in the compact rect grammar,
+   blurred so footage does not read through the label. */
 .pbtn {
   appearance: none;
-  border: 0;
-  background: none;
-  color: var(--ink);
-  font: 500 20px/1 var(--font);
-  padding: 12px 16px;
-  border-radius: var(--radius);
+  border: 1px solid var(--hairline);
+  background: rgba(29, 29, 31, 0.72);
+  -webkit-backdrop-filter: var(--blur);
+  backdrop-filter: var(--blur);
+  color: var(--body-muted);
+  font: var(--weight-body) var(--text-caption) / 1 var(--font);
+  letter-spacing: var(--track-caption);
+  padding: calc(8px * var(--scale)) calc(15px * var(--scale));
+  border-radius: var(--r-sm);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-xs);
   white-space: nowrap;
-  opacity: 0.86;
-  transition:
-    opacity 0.12s,
-    background 0.12s;
+  transition: transform 0.12s ease;
 }
 
-.pbtn:hover {
-  opacity: 1;
-  background: rgba(255, 255, 255, 0.12);
+.pbtn:active {
+  transform: var(--press);
 }
 
 .pbtn.tv-focus,
 .pbtn:focus-visible {
-  outline: 3px solid var(--ink);
+  outline: var(--focus-ring) solid var(--focus-ring-color);
   outline-offset: 2px;
-  opacity: 1;
+  color: var(--on-dark);
 }
 
 .pbtn .glyph {
-  font-size: 26px;
+  font-size: var(--text-tagline);
   line-height: 1;
 }
 
 /* The universal closed-caption badge, drawn rather than borrowed from emoji. */
 .pbtn .glyph.cc {
-  font-size: 14px;
-  font-weight: 800;
+  font-size: var(--text-fine);
+  font-weight: var(--weight-strong);
   letter-spacing: 0.04em;
   border: 2px solid currentColor;
   border-radius: 3px;
-  padding: 2px 4px;
+  padding: 1px 3px;
   line-height: 1.05;
 }
 
-/* Active means bright, not red -- red stays on the scrubber so the two
-   never compete for attention. */
+/* Switched on: the Action Blue fill, the same signal a primary button gives.
+   This is the only colour in the bar, which is the point of having one. */
 .pbtn.on {
-  color: var(--ink);
-  opacity: 1;
-}
-
-.pbtn:not(.on) {
-  color: #d2d2d2;
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--on-primary);
+  font-weight: var(--weight-strong);
 }
 
 .seek-toast {
@@ -261,11 +287,15 @@
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  background: rgba(0, 0, 0, 0.78);
-  padding: 20px 34px;
-  border-radius: 6px;
-  font-size: 32px;
-  font-weight: 600;
+  background: rgba(29, 29, 31, 0.8);
+  -webkit-backdrop-filter: var(--blur);
+  backdrop-filter: var(--blur);
+  border: 1px solid var(--hairline);
+  padding: var(--space-md) var(--space-xl);
+  border-radius: var(--r-lg);
+  font-size: var(--text-display-md);
+  font-weight: var(--weight-strong);
+  letter-spacing: var(--track-display-md);
   font-variant-numeric: tabular-nums;
   opacity: 0;
   transition: opacity 0.15s;
