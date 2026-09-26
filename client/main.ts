@@ -9,6 +9,7 @@
 import { createStore } from './core/store.ts';
 import { createFocusManager } from './navigation/focus.ts';
 import { Action, actionFor, asDirection } from './navigation/remote.ts';
+import { createBrowseScreen } from './views/browse.ts';
 import { createDetailScreen } from './views/detail.ts';
 import { createHomeScreen } from './views/home.ts';
 import { createPlayerScreen } from './views/player.ts';
@@ -23,6 +24,7 @@ const focus = createFocusManager({
   activeLayer: () => {
     if (player.isOpen) return player.controlsOpen() ? player.element : null;
     if (detail.isOpen) return detail.element;
+    if (browse.isOpen) return browse.element;
     return home.element;
   },
 });
@@ -32,13 +34,22 @@ const home = createHomeScreen({
   focus,
   onSelect: (item) => detail.open(item),
   onPlay: (item, seconds) => detail.open(item, seconds),
+  onBrowse: (folder) => browse.open(folder),
+});
+
+const browse = createBrowseScreen({
+  store,
+  focus,
+  onSelect: (item) => detail.open(item),
+  onBack: (folder) => home.focusFolder(folder),
 });
 
 const detail = createDetailScreen({
   store,
   focus,
   onPlay: (request) => player.start(request),
-  onBack: (lastId) => home.focusItem(lastId),
+  // Closing the detail sheet returns to whichever screen opened it.
+  onBack: (lastId) => returnTo(lastId),
 });
 
 const player = createPlayerScreen({
@@ -47,10 +58,17 @@ const player = createPlayerScreen({
     // Re-read the library so Continue Watching reflects what just happened.
     void store.refresh().then(() => {
       home.render();
-      home.focusItem(lastId);
+      browse.refresh();
+      returnTo(lastId);
     });
   },
 });
+
+/** Hand focus back to the grid when it is open behind us, otherwise to the rows. */
+function returnTo(lastId: string | null): void {
+  if (browse.isOpen) browse.focusItem(lastId);
+  else home.focusItem(lastId);
+}
 
 // ---------------------------------------------------------------- remote input
 
@@ -67,7 +85,11 @@ document.addEventListener('keydown', (event) => {
   const direction = asDirection(action);
   if (direction) focus.move(direction);
   else if (action === Action.SELECT) focus.current?.click();
-  else if (action === Action.BACK && detail.isOpen) detail.close();
+  else if (action === Action.BACK) {
+    // Innermost screen first, so Back unwinds one layer at a time.
+    if (detail.isOpen) detail.close();
+    else if (browse.isOpen) browse.close();
+  }
 });
 
 /** @returns whether the key was consumed. */

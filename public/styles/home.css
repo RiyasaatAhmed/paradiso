@@ -184,6 +184,16 @@
   color: var(--on-dark);
 }
 
+/* How many the folder holds, when the row is showing only the first of them.
+   Quiet, because it is a fact about the row rather than part of its name. */
+.row-count {
+  margin-left: var(--space-sm);
+  color: var(--body-muted);
+  font-size: var(--text-caption);
+  font-weight: var(--weight-body);
+  letter-spacing: var(--track-caption);
+}
+
 .row-track {
   display: flex;
   /* The document's grid gutter, and also the clearance a focused card needs:
@@ -325,6 +335,32 @@
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+/* The card that ends a shortened row. It carries no artwork, because there is
+   no single title it could show -- a count and a label say what it opens. */
+.see-all-face {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xxs);
+  background: var(--tile-2);
+  border: 1px solid var(--hairline);
+}
+
+.see-all-count {
+  font-size: var(--text-display-md);
+  font-weight: var(--weight-strong);
+  letter-spacing: var(--track-display-md);
+  color: var(--on-dark);
+  line-height: 1;
+}
+
+.see-all-label {
+  font-size: var(--text-caption);
+  letter-spacing: var(--track-caption);
+  color: var(--primary-on-dark);
 }
 
 .card-sub {

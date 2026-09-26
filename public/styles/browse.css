@@ -1,0 +1,99 @@
+/* The browse grid: one folder, wrapped instead of stretched into a corridor.
+   Cards themselves are styled in home.css -- this file only arranges them. */
+
+.browse {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 50;
+  background: var(--canvas);
+  overflow-y: auto;
+}
+
+/* ---------------------------------------------------------------- header */
+
+/* Sticky and frosted, so the folder name and the jump rail stay reachable
+   however far down the grid you are. */
+.browse-head {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding: var(--space-xl) var(--safe) var(--space-lg);
+  background: rgba(37, 37, 39, 0.8);
+  -webkit-backdrop-filter: var(--blur);
+  backdrop-filter: var(--blur);
+}
+
+.browse-title {
+  margin: 0;
+  font-size: var(--text-display-md);
+  font-weight: var(--weight-strong);
+  letter-spacing: var(--track-display-md);
+  line-height: var(--leading-display);
+}
+
+.browse-count {
+  margin-top: var(--space-xxs);
+  color: var(--body-muted);
+  font-size: var(--text-caption);
+  letter-spacing: var(--track-caption);
+}
+
+/* ---------------------------------------------------------------- jump rail */
+
+/* Ranges, in the utility chip grammar -- these set where you are looking
+   rather than doing anything, so they must not read as blue pills. */
+.browse-rail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-top: var(--space-md);
+}
+
+/* ---------------------------------------------------------------- grid */
+
+/* auto-fill rather than a fixed column count: the same rule gives six columns
+   on a television and two on a phone, and the focus engine resolves moves
+   geometrically, so navigation needs no say in how many there are. */
+.browse-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-xl) var(--space-lg);
+  padding: var(--space-lg) var(--safe) var(--space-section);
+}
+
+/* The row version is a fixed width; here the column decides. */
+.browse-grid .card {
+  width: auto;
+  /* The header is sticky, so focus has to stop short of sliding underneath it.
+     Scaled, because the header is built from scaled type. */
+  scroll-margin-top: calc(150px * var(--scale));
+  scroll-margin-bottom: var(--space-xl);
+}
+
+/* A row clips titles to one line because the next card is only ever a glance
+   away. A grid has the vertical room to finish the sentence, and episode names
+   are exactly where the last two words carry the meaning. */
+.browse-grid .card-title {
+  -webkit-line-clamp: 2;
+  white-space: normal;
+}
+
+/* A focused card grows, and in a grid it has neighbours on four sides rather
+   than two. Lifting it above them keeps the ring unbroken. */
+.browse-grid .card.tv-focus {
+  z-index: 3;
+}
+
+@media (max-width: 860px) {
+  .browse-head {
+    padding: var(--space-lg) var(--safe) var(--space-sm);
+  }
+
+  .browse-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: var(--space-lg) var(--space-sm);
+  }
+}
