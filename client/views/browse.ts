@@ -16,6 +16,7 @@
 
 import type { LibraryItem } from '../../shared/contracts.ts';
 import { byId, clear, focusableButton } from '../core/dom.ts';
+import { folderName, folderParent } from '../core/format.ts';
 import type { Store } from '../core/store.ts';
 import type { FocusManager } from '../navigation/focus.ts';
 import { buildCard } from './card.ts';
@@ -60,8 +61,11 @@ export function createBrowseScreen({
   function render(folder: string): void {
     const items = store.byFolder.get(folder) ?? [];
 
-    titleNode.textContent = folder;
-    countNode.textContent = `${items.length} videos`;
+    const parent = folderParent(folder);
+    titleNode.textContent = folderName(folder);
+    countNode.textContent = parent
+      ? `${items.length} videos · in ${parent}`
+      : `${items.length} videos`;
 
     clear(grid);
     items.forEach((item, index) => {

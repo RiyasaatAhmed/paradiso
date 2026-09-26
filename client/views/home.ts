@@ -1,7 +1,7 @@
 import type { LibraryItem } from '../../shared/contracts.ts';
 import { api } from '../core/api.ts';
 import { appendAll, byId, clear, el, focusableButton } from '../core/dom.ts';
-import { formatDuration } from '../core/format.ts';
+import { folderName, formatDuration } from '../core/format.ts';
 import type { FocusManager } from '../navigation/focus.ts';
 import type { Store } from '../core/store.ts';
 import { buildCard, buildSeeAllCard } from './card.ts';
@@ -76,7 +76,11 @@ export function createHomeScreen({
 
     if (resuming.length > 0) rows.appendChild(buildRow('Continue Watching', resuming));
     for (const [folder, group] of store.byFolder) {
-      rows.appendChild(buildRow(folder, group, () => onBrowse(folder)));
+      const row = buildRow(folderName(folder), group, () => onBrowse(folder));
+      // The key, not the label: the label is shortened for reading and two
+      // folders can share one.
+      row.dataset['folder'] = folder;
+      rows.appendChild(row);
     }
   }
 
@@ -198,9 +202,9 @@ export function createHomeScreen({
      * Back returns you to where you were rather than to the top of the screen.
      */
     focusFolder(folder) {
-      const headings = Array.from(rows.querySelectorAll<HTMLElement>('.row'));
-      const row = headings.find((node) => node.querySelector('.row-title')?.firstChild?.textContent === folder);
-      const target = row?.querySelector<HTMLElement>('.see-all') ?? row?.querySelector<HTMLElement>('.card');
+      const row = rows.querySelector<HTMLElement>(`.row[data-folder="${CSS.escape(folder)}"]`);
+      const target =
+        row?.querySelector<HTMLElement>('.see-all') ?? row?.querySelector<HTMLElement>('.card');
       if (target) focus.set(target);
       else focus.firstMatching('.card');
     },

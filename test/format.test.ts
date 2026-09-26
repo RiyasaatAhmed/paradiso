@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { formatClock, formatDuration } from '../client/core/format.ts';
+import { folderName, folderParent, formatClock, formatDuration } from '../client/core/format.ts';
 import { formatSize } from '../src/support/format.ts';
 
 describe('formatClock', () => {
@@ -41,5 +41,28 @@ describe('formatSize', () => {
   it('uses MB below a gigabyte and GB above', () => {
     assert.equal(formatSize(603 * 1024 ** 2), '603 MB');
     assert.equal(formatSize(2.5 * 1024 ** 3), '2.5 GB');
+  });
+});
+
+describe('folderName', () => {
+  it('shows the folder itself, not the route to it', () => {
+    assert.equal(
+      folderName('Downloads/The Tom and Jerry Show (2014-2022)'),
+      'The Tom and Jerry Show (2014-2022)'
+    );
+  });
+
+  it('leaves a top-level folder alone', () => {
+    assert.equal(folderName('CP'), 'CP');
+  });
+});
+
+describe('folderParent', () => {
+  it('gives the route above the folder', () => {
+    assert.equal(folderParent('Downloads/Shows/Season 1'), 'Downloads/Shows');
+  });
+
+  it('is empty at the top level, where there is nothing to say', () => {
+    assert.equal(folderParent('CP'), '');
   });
 });
