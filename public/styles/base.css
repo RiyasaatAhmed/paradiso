@@ -1,62 +1,82 @@
-/* Document defaults, buttons and the focus treatment shared by every screen. */
+/* Document defaults, buttons and the focus treatment shared by every screen.
+
+   Two button grammars, as the design document specifies and no more: a pill for
+   anything that reads as an action, and a compact rounded rect for utility
+   chrome. Nothing in between. */
 
 /* ---------------------------------------------------------------- buttons */
 
+/* The default action: a ghost pill. Border and label in Sky Link Blue rather
+   than Action Blue, because Action Blue at #0066cc sinks into a dark tile. */
 .btn {
   appearance: none;
-  border: 0;
-  font: 600 22px/1 var(--font);
-  padding: 17px 32px;
-  border-radius: var(--radius);
+  background: transparent;
+  color: var(--primary-on-dark);
+  border: 1px solid var(--primary-on-dark);
+  font: var(--weight-body) var(--text-body) / 1 var(--font);
+  letter-spacing: var(--track-body);
+  padding: calc(11px * var(--scale)) calc(22px * var(--scale));
+  border-radius: var(--r-pill);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-sm);
   white-space: nowrap;
-  background: rgba(109, 109, 110, 0.7);
-  color: var(--ink);
-  transition: background 0.12s;
+  transition: transform 0.12s ease;
 }
 
-.btn:hover {
-  background: rgba(109, 109, 110, 0.5);
-}
-
-/* The white "Play" pill is Netflix's one loud call to action. */
+/* The one loud call to action. Action Blue holds up as a fill on a dark tile
+   even though it fails as text on one. */
 .btn.primary {
-  background: var(--ink);
-  color: #000;
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--on-primary);
+  font-weight: var(--weight-strong);
 }
 
-.btn.primary:hover {
-  background: rgba(255, 255, 255, 0.82);
-}
-
+/* Utility chrome -- playback mode, audio track, subtitle track. The compact
+   rect grammar, which is what separates a setting from an action. */
 .btn.small {
-  font-size: 19px;
-  padding: 12px 20px;
-  background: rgba(42, 42, 42, 0.9);
-  border: 1px solid var(--line);
+  font-size: var(--text-caption);
+  letter-spacing: var(--track-caption);
+  padding: calc(8px * var(--scale)) calc(15px * var(--scale));
+  border-radius: var(--r-sm);
+  background: var(--tile-2);
+  border: 1px solid var(--hairline);
+  color: var(--body-muted);
 }
 
+/* Selected, borrowed from the configurator chip: the border upgrades to 2px of
+   focus blue and the label comes up to full white. Deliberately not the ring
+   colour -- a selected chip and a focused chip have to stay tellable apart when
+   they are the same chip. */
 .btn.small.on {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: #000;
+  border: 2px solid var(--primary-focus);
+  color: var(--on-dark);
+  font-weight: var(--weight-strong);
+  /* Compensate for the thicker border so the row does not shift. */
+  padding: calc(7px * var(--scale)) calc(14px * var(--scale));
+}
+
+/* Press, on every button in the app. */
+.btn:active {
+  transform: var(--press);
 }
 
 /* ---------------------------------------------------------------- focus */
 
-/* Netflix signals focus mainly by scale plus a white edge; red stays for
-   progress so the two never compete. */
+/* There is no hover-led state anywhere in this interface -- most of the people
+   using it are holding a remote, not a mouse. Focus does all the work. */
 [data-focus].tv-focus,
 [data-focus]:focus-visible {
-  outline: 3px solid var(--ink);
+  outline: var(--focus-ring) solid var(--focus-ring-color);
   outline-offset: 2px;
 }
 
+/* No offset here, unlike buttons: the ring hugs the artwork so a focused card
+   stays inside its own column while it is scaled up. */
 .card.tv-focus,
 .card:focus-visible {
-  outline: 3px solid var(--ink);
+  outline: var(--focus-ring) solid var(--focus-ring-color);
   outline-offset: 0;
 }
