@@ -50,16 +50,11 @@ export function createHomeScreen({
   const rows = byId('rows');
   const billboard = byId('billboard');
   const emptyMessage = byId('empty');
-  const toggleButton = byId<HTMLButtonElement>('toggleAll');
-  const rescanButton = byId<HTMLButtonElement>('rescan');
-
   let featured: LibraryItem | null = null;
 
   function render(): void {
     const items = store.visibleItems;
 
-    toggleButton.textContent = store.showAll ? 'Hide small files' : 'Show everything';
-    toggleButton.className = store.showAll ? 'chip on' : 'chip';
     clear(rows);
 
     const first = items[0];
@@ -180,32 +175,6 @@ export function createHomeScreen({
     emptyMessage.hidden = false;
     emptyMessage.textContent = message;
   }
-
-  toggleButton.addEventListener('click', () => {
-    store.toggleShowAll();
-    render();
-    focus.firstMatching('.card');
-  });
-
-  rescanButton.addEventListener('click', () => {
-    rescanButton.textContent = 'Scanning…';
-    void api
-      .rescan()
-      .then(() => store.refresh())
-      .then(() => {
-        render();
-        focus.firstMatching('.card');
-      })
-      .catch(() => showFailure('Rescan failed.'))
-      .finally(() => {
-        rescanButton.textContent = 'Rescan';
-      });
-  });
-
-  // Transparent over the billboard, solid once the artwork has scrolled away.
-  window.addEventListener('scroll', () => {
-    byId('topbar').className = window.pageYOffset > 40 ? 'topbar solid' : 'topbar';
-  });
 
   return {
     element: root,

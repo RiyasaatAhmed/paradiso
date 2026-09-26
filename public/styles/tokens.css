@@ -121,6 +121,11 @@
      area, so the two agree. */
   --safe: var(--space-section);
 
+  /* How much room the fixed header takes. Screens underneath start below it and
+     sticky things inside them park against it, so it has to be a number both
+     can read rather than something only the header knows. */
+  --topbar-h: calc(var(--space-md) * 2 + 44px * var(--scale));
+
   /* ------------------------------------------------------------ depth */
 
   /* The only shadow in the system, and it belongs to artwork resting on a

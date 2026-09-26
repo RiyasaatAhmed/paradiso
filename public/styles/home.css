@@ -4,12 +4,15 @@
 
 /* The frosted sub-nav treatment: the tile colour at 80% with a saturating blur
    behind it, so the bar floats over artwork instead of covering it. */
+/* Above every screen but the player, since it is now shown over all of them.
+   The player sits at 100 and hides this outright. */
 .topbar {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  z-index: 40;
+  z-index: 80;
+  min-height: var(--topbar-h);
   display: flex;
   align-items: center;
   gap: var(--space-lg);
@@ -30,13 +33,50 @@
   backdrop-filter: var(--blur);
 }
 
-/* The wordmark. No accent colour: the single blue belongs to things you can
-   press, and a logo is not one of them. */
+/* The wordmark, which is also the way home. The mark carries the blue because
+   it is the app's own icon; the word stays white, since the accent belongs to
+   things you press and a name is not one of them. */
 .brand {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
   color: var(--on-dark);
-  font-size: var(--text-tagline);
-  font-weight: var(--weight-strong);
+  font: var(--weight-strong) var(--text-tagline) / 1 var(--font);
   letter-spacing: 0.04em;
+  transition: transform 0.12s ease;
+}
+
+.brand:active {
+  transform: var(--press);
+}
+
+.brand.tv-focus,
+.brand:focus-visible {
+  outline: var(--focus-ring) solid var(--focus-ring-color);
+  outline-offset: 6px;
+  border-radius: var(--r-sm);
+}
+
+.brand-mark {
+  width: calc(28px * var(--scale));
+  height: calc(28px * var(--scale));
+  display: block;
+  flex: 0 0 auto;
+}
+
+.brand-tile {
+  fill: var(--primary);
+}
+
+.brand-play {
+  fill: var(--on-primary);
+  stroke: var(--on-primary);
 }
 
 .topbar-actions {

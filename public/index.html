@@ -24,14 +24,25 @@
     <link rel="stylesheet" href="/styles/responsive.css" />
   </head>
   <body>
+    <!-- Outside every screen, because it outlives all of them. The colours come
+         from CSS rather than fill attributes so the mark stays inside the token
+         system like everything else. -->
+    <nav class="topbar" id="topbar">
+      <button class="brand" id="brandHome" data-focus aria-label="Paradiso, back to home">
+        <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+          <rect class="brand-tile" width="64" height="64" rx="14" />
+          <path class="brand-play" d="M25 19.5 46 32 25 44.5Z" stroke-width="5"
+                stroke-linejoin="round" />
+        </svg>
+        <span class="brand-word">PARADISO</span>
+      </button>
+      <div class="topbar-actions">
+        <button class="chip" id="toggleAll" data-focus>Show everything</button>
+        <button class="chip" id="rescan" data-focus>Rescan</button>
+      </div>
+    </nav>
+
     <main id="library">
-      <nav class="topbar" id="topbar">
-        <div class="brand">PARADISO</div>
-        <div class="topbar-actions">
-          <button class="chip" id="toggleAll" data-focus>Show everything</button>
-          <button class="chip" id="rescan" data-focus>Rescan</button>
-        </div>
-      </nav>
 
       <!-- Billboard: one big still, with the copy sitting in the darkened left of
            the frame. The scrim is what makes the text readable over an unknown

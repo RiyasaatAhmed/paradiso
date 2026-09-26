@@ -22,11 +22,16 @@
    lift carries it over the header too -- covering the folder name and the last
    of the range chips, which are the two things the header exists to keep
    reachable. Cards pass behind it instead, blurred by the frosting. */
+/* The room for the app header is this element's own top padding rather than
+   padding on the scroll container. Sticking at 0 with the clearance built in
+   means the head reserves exactly the space it occupies, so the first row of
+   cards begins below it instead of underneath it -- and the frosted panel runs
+   up behind the header rather than stopping short of it. */
 .browse-head {
   position: sticky;
   top: 0;
   z-index: 20;
-  padding: var(--space-xl) var(--safe) var(--space-lg);
+  padding: calc(var(--topbar-h) + var(--space-lg)) var(--safe) var(--space-lg);
   background: rgba(37, 37, 39, 0.8);
   -webkit-backdrop-filter: var(--blur);
   backdrop-filter: var(--blur);
@@ -73,9 +78,9 @@
 /* The row version is a fixed width; here the column decides. */
 .browse-grid .card {
   width: auto;
-  /* The header is sticky, so focus has to stop short of sliding underneath it.
-     Scaled, because the header is built from scaled type. */
-  scroll-margin-top: calc(150px * var(--scale));
+  /* Both headers stack above the grid, and the folder's own head now carries
+     the app header's height inside it, so one measurement covers both. */
+  scroll-margin-top: calc(var(--topbar-h) + 165px * var(--scale));
   scroll-margin-bottom: var(--space-xl);
 }
 
