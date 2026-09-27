@@ -476,6 +476,24 @@ displayed in a browser.
 
 ## Troubleshooting
 
+**The remote moves a mouse pointer instead of jumping between videos.**
+
+Samsung's TV browser has two ways of driving a page. In *pointer* mode the
+directional pad steers an on-screen cursor, which you then have to walk across
+the screen; in *direction key* mode the same pad jumps straight from one video
+to the next, which is what this app is built for.
+
+Paradiso cannot switch between them. Samsung's own developer documentation is
+explicit that a web page has no access to the remote-control APIs, so the choice
+belongs to the television, not to the page. Look for a **pointer toggle on the
+remote** — on most 2015–2023 Samsung remotes, holding the centre or **POINTER**
+button turns the cursor on and off. The wording and the button vary by model
+year, so it is worth checking your remote's manual.
+
+Whichever mode you are in, the video under the pointer is highlighted with the
+same blue ring the remote uses, so the thing that is lit is always the thing OK
+will open.
+
 **The TV says "Server not found", or the page never loads.**
 
 1. Check both devices are on the *same* wifi. A phone on mobile data, or a TV on
