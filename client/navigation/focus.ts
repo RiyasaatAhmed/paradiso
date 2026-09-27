@@ -16,9 +16,19 @@ const MIN_TRAVEL_PX = 4;
 
 export type Direction = 'left' | 'right' | 'up' | 'down';
 
+export interface SetOptions {
+  /**
+   * Whether to bring the element into view. True for anything the remote did,
+   * false when a pointer is already resting on the element -- scrolling the
+   * page out from under a cursor moves the target away from the hand holding
+   * it, which is worse than not scrolling at all.
+   */
+  scroll?: boolean;
+}
+
 export interface FocusManager {
   readonly current: HTMLElement | null;
-  set(node: HTMLElement): void;
+  set(node: HTMLElement, options?: SetOptions): void;
   clear(): void;
   first(): void;
   firstMatching(selector: string): void;
@@ -80,7 +90,7 @@ export function createFocusManager({
       return current;
     },
 
-    set(node) {
+    set(node, options) {
       removeMarkers();
       node.classList.add(FOCUS_CLASS);
       current = node;
@@ -90,6 +100,8 @@ export function createFocusManager({
       } catch {
         node.focus();
       }
+
+      if (options?.scroll === false) return;
       // 'nearest' scrolls the row horizontally and the page vertically by the
       // smallest amount that reveals the element, which reads as far calmer
       // than snapping the focused item to an edge.
