@@ -181,6 +181,33 @@ function returnTo(lastId: string | null): void {
   else home.focusItem(lastId);
 }
 
+// ---------------------------------------------------------------- pointer input
+
+/**
+ * A pointer moves the same highlight the remote does.
+ *
+ * Samsung's TV browser defaults to steering an on-screen cursor with the d-pad
+ * rather than sending the arrow keys to the page, so on that television the
+ * focus engine never hears anything and nothing lights up until you click --
+ * you cannot tell what you are about to open. Mirroring the pointer into focus
+ * means there is still exactly one highlight, wherever it came from, and
+ * pressing OK always opens the thing that is lit.
+ *
+ * Without scrolling, deliberately: a cursor is a physical position on the
+ * screen, and moving the page under it would slide the target away from where
+ * the hand is pointing.
+ */
+document.addEventListener('mousemove', (event) => {
+  const target = event.target;
+  if (!(target instanceof Element)) return;
+
+  const focusable = target.closest<HTMLElement>('[data-focus]');
+  if (!focusable || focusable === focus.current) return;
+  if (!topScreen()?.contains(focusable) && !header.element.contains(focusable)) return;
+
+  focus.set(focusable, { scroll: false });
+});
+
 // ---------------------------------------------------------------- remote input
 
 document.addEventListener('keydown', (event) => {

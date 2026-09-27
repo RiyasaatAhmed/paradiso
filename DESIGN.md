@@ -76,6 +76,23 @@ still reads as two distinct states.
 
 ---
 
+## Hover is not a state here
+
+The source document says never to design a hover state, and this app does not
+have one — but not because pointers never appear. Samsung's television browser
+steers an on-screen cursor with the d-pad, so a pointer is exactly what many
+viewers have.
+
+The resolution is that **a pointer moves focus** rather than lighting a second
+style. Hovering a card sets the same ring the remote sets, so there is only ever
+one highlight on screen and pressing OK always opens the thing that is lit.
+Pointer-driven focus never scrolls, since moving the page under a cursor slides
+the target away from where the hand is pointing.
+
+So the rule stands as written — no `:hover` rules that mean anything on their
+own — while the behaviour it was protecting survives on hardware the source
+document never had to consider.
+
 ## One accent, and no second one
 
 `--primary` `#0066cc` fills. `--primary-on-dark` `#2997ff` is its dark-surface

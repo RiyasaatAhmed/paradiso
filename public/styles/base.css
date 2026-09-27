@@ -65,8 +65,11 @@
 
 /* ---------------------------------------------------------------- focus */
 
-/* There is no hover-led state anywhere in this interface -- most of the people
-   using it are holding a remote, not a mouse. Focus does all the work. */
+/* Focus does all the work, and there is no separate hover state anywhere: a
+   pointer moving over something sets this same ring rather than lighting up a
+   second way. That matters on a television, where Samsung's browser steers a
+   cursor with the d-pad -- two different highlights would mean two different
+   answers to "what does OK open". */
 [data-focus].tv-focus,
 [data-focus]:focus-visible {
   outline: var(--focus-ring) solid var(--focus-ring-color);
